@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { arrayMove } from '@dnd-kit/sortable';
-import type { DragEndEvent } from '@dnd-kit/core';
 import { getForm, updateForm, type IForm } from '../api/forms';
 import { usePlanUsage } from '../hooks/usePlanUsage';
 
@@ -8,8 +6,6 @@ export function useFormBuilder() {
     const [formState, setFormState] = useState<IForm | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
-    const [expandedStep, setExpandedStep] = useState<string | null>(null);
-    const [previewStepIndex, setPreviewStepIndex] = useState(0);
     const [selectedTab, setSelectedTab] = useState(0);
 
     const { hasPermission, isLoading: isPlanLoading } = usePlanUsage();
@@ -19,10 +15,56 @@ export function useFormBuilder() {
         const fetchForm = async () => {
             try {
                 const data = await getForm();
-                setFormState(data);
-                if (data.steps.length > 0) {
-                    setExpandedStep(data.steps[0].id);
+
+                // Ensure we have exactly 3 steps for the new segmented builder experience
+                const requiredSteps = [
+                    { id: 'contact-info', title: 'Contact Information', fields: [] as any[] },
+                    { id: 'address-info', title: 'Shipping Address', fields: [] as any[] },
+                    { id: 'details-info', title: 'Additional Details', fields: [] as any[] }
+                ];
+
+                if (data.steps && data.steps.length > 0) {
+                    const allFields = data.steps.flatMap(step => step.fields);
+                    
+                    // Re-distribute existing fields into the 3 new buckets based on labels
+                    requiredSteps[0].fields = allFields.filter(f => {
+                        if (f.type === 'section') return false;
+                        const l = (f.label || '').toLowerCase();
+                        return l.includes('name') || l.includes('email') || l.includes('phone');
+                    });
+                    
+                    requiredSteps[1].fields = allFields.filter(f => {
+                        if (f.type === 'section') return false;
+                        const l = (f.label || '').toLowerCase();
+                        return l.includes('address') || l.includes('city') || l.includes('country') || l.includes('pincode') || l.includes('state') || l.includes('district');
+                    });
+
+                    requiredSteps[2].fields = allFields.filter(f => {
+                        if (f.type === 'section') return false;
+                        const l = (f.label || '').toLowerCase();
+                        return l.includes('message') || l.includes('note') || l.includes('additional') || 
+                               (!requiredSteps[0].fields.includes(f) && !requiredSteps[1].fields.includes(f));
+                    });
+
+                    data.steps = requiredSteps;
+                } else {
+                    // Default fields for a brand new form
+                    requiredSteps[0].fields = [
+                        { id: 'f-1', type: 'text', label: 'First Name', required: true, placeholder: 'Enter first name...' },
+                        { id: 'f-2', type: 'text', label: 'Last Name', required: true, placeholder: 'Enter last name...' },
+                        { id: 'f-3', type: 'email', label: 'Email Address', required: true, placeholder: 'Enter email address...' },
+                    ];
+                    requiredSteps[1].fields = [
+                        { id: 'f-5', type: 'text', label: 'Address Line 1', required: true, placeholder: 'Enter address line 1...' },
+                        { id: 'f-7', type: 'text', label: 'City', required: true, placeholder: 'Enter city...' },
+                    ];
+                    requiredSteps[2].fields = [
+                        { id: 'f-12', type: 'textarea', label: 'Additional Message', required: false, placeholder: 'Enter any additional details...' },
+                    ];
+                    data.steps = requiredSteps;
                 }
+
+                setFormState(data);
             } catch (err) {
                 console.error("Fetch form error", err);
             } finally {
@@ -37,56 +79,6 @@ export function useFormBuilder() {
             setCanEdit(hasPermission('form_builder'));
         }
     }, [isPlanLoading, hasPermission]);
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-        if (over && active.id !== over.id && formState) {
-            const oldIndex = formState.steps.findIndex(s => s.id === active.id);
-            const newIndex = formState.steps.findIndex(s => s.id === over.id);
-            setFormState({
-                ...formState,
-                steps: arrayMove(formState.steps, oldIndex, newIndex)
-            });
-        }
-    };
-
-    const addStep = () => {
-        if (!formState) return;
-        const newStepId = `step-${Date.now()}`;
-        const newStep = {
-            id: newStepId,
-            title: 'New Step',
-            fields: []
-        };
-        
-        const updatedSteps = [...formState.steps];
-        const reviewIndex = updatedSteps.findIndex(s => s.id === 'step-review');
-        
-        if (reviewIndex !== -1) {
-            updatedSteps.splice(reviewIndex, 0, newStep);
-        } else {
-            updatedSteps.push(newStep);
-        }
-
-        setFormState({
-            ...formState,
-            steps: updatedSteps
-        });
-        setExpandedStep(newStepId);
-    };
-
-    const addField = (stepIdx: number) => {
-        if (!formState) return;
-        const updated = { ...formState };
-        const newField = {
-            id: `field-${Date.now()}`,
-            type: 'text',
-            label: 'New Field',
-            required: false
-        };
-        updated.steps[stepIdx].fields.push(newField);
-        setFormState(updated);
-    };
 
     const handleSave = async () => {
         if (!formState) return;
@@ -107,17 +99,9 @@ export function useFormBuilder() {
         setFormState,
         isLoading: isLoading || isPlanLoading,
         isSaving,
-        expandedStep,
-        setExpandedStep,
-        previewStepIndex,
-        setPreviewStepIndex,
         selectedTab,
         setSelectedTab,
         canEdit,
-        handleDragEnd,
-        addStep,
-        addField,
         handleSave,
-        stepsCount: formState?.steps?.length || 0
     };
 }

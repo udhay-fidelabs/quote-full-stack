@@ -24,8 +24,9 @@
                 try {
                     const product = await window.RqApi.fetchProduct(handle);
                     if (product && window.RqUi.populateHiddenFields) {
+                        window._rqCurrentProduct = product;
                         window.RqUi.populateHiddenFields(modal, product);
-                        window.RqUi.showProductSummary(modal, product);
+                        window.RqUi.showProductSummary(modal, product, window._rqFormConfig?.settings);
                     }
                 } catch (e) {
                     console.error("Failed to populate modal for product:", e);
@@ -45,6 +46,12 @@
                 if (formConfig && formConfig.steps) {
                     window._rqFormConfig = formConfig;
                     window.RqUi.buildDynamicForm(blockId, formConfig);
+                    
+                    // Refresh product summary with new settings
+                    if (modal.dataset.isBulk === 'false' && window._rqCurrentProduct) {
+                        window.RqUi.showProductSummary(modal, window._rqCurrentProduct, formConfig.settings);
+                    }
+                    
                     modal.dataset.formLoaded = 'true';
                 } else {
                     if (dynamicContainer) {
@@ -141,168 +148,20 @@
         return url;
     }
 
-    async function rqPopulateReviewStep(blockId) {
-        const modal = document.getElementById(`rqModal-${blockId}`);
-        const setHtml = (id, html) => {
-            const el = document.getElementById(id + blockId);
-            if (el) el.innerHTML = html;
-        };
-
-        const isBulk = modal?.dataset.isBulk === 'true';
-        if (isBulk && window.RqCart) {
-            const cart = window.RqCart.getCart();
-            let itemsHtml = '<div class="rq-review-items-card">';
-            let total = 0;
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-                itemsHtml += `
-                    <div class="rq-review-item-row">
-                        <img src="${resizeImage(item.featured_image, 120)}">
-                        <div style="flex: 1; margin: 0 16px;">
-                            <div style="font-weight: 700; font-size: 15px; color: #1a1a1b; margin-bottom: 2px;">${item.title}</div>
-                            <div style="font-size: 13px; color: #6d7175;">${item.variantTitle !== 'Default Title' ? item.variantTitle : ''}</div>
-                        </div>
-                        <div style="text-align: right; flex-shrink: 0;">
-                            <div style="font-size: 14px; font-weight: 700; color: #1a1a1b;">× ${item.quantity}</div>
-                            <div style="font-size: 14px; color: #6366f1; font-weight: 700;">${window.RqCart.formatPrice(item.price)}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            itemsHtml += `
-                <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-weight: 800; font-size: 16px; color: #1a1a1b;">Total Estimate</span>
-                    <span style="font-weight: 800; font-size: 20px; color: #6366f1;">${window.RqCart.formatPrice(total)}</span>
-                </div>
-            `;
-            itemsHtml += '</div>';
-            setHtml('rq-review-items-', itemsHtml);
-        } else {
-            const form = document.getElementById(`rq-form-${blockId}`);
-            if (form) {
-                const title = form.querySelector('[name="productTitle"]')?.value;
-                const price = parseFloat(form.querySelector('[name="price"]')?.value) || 0;
-                const qty = parseInt(form.querySelector('[name="quantity"]')?.value) || 1;
-                const vTitle = form.querySelector('[name="variantTitle"]')?.value;
-                const img = form.querySelector('[name="productImage"]')?.value;
-                const total = price * qty;
-
-                let itemsHtml = `
-                    <div class="rq-review-items-card">
-                        <div class="rq-review-item-row">
-                            <img src="${resizeImage(img, 120)}">
-                            <div style="flex: 1; margin: 0 16px;">
-                                <div style="font-weight: 700; font-size: 16px; color: #1a1a1b; margin-bottom: 2px;">${title}</div>
-                                <div style="font-size: 14px; color: #6d7175;">${vTitle !== 'Default Title' ? vTitle : ''}</div>
-                            </div>
-                            <div style="text-align: right; flex-shrink: 0;">
-                                <div style="font-size: 15px; font-weight: 700; color: #1a1a1b;">× ${qty}</div>
-                                <div style="font-size: 15px; color: #6366f1; font-weight: 700;">${window.RqCart.formatPrice(price * 100)}</div>
-                            </div>
-                        </div>
-                        <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-weight: 800; font-size: 16px; color: #1a1a1b;">Total Estimate</span>
-                            <span style="font-weight: 800; font-size: 20px; color: #6366f1;">${window.RqCart.formatPrice(total * 100)}</span>
-                        </div>
-                    </div>
-                `;
-                setHtml('rq-review-items-', itemsHtml);
-            }
-        }
-
-        const customFieldsContainer = document.getElementById(`rq-review-custom-fields-${blockId}`);
-        if (customFieldsContainer && window._rqFormConfig) {
-            let customHtml = '';
-            for (const step of window._rqFormConfig.steps) {
-                if (step.id === 'step-review') continue;
-                let stepFieldsHtml = '';
-                let hasValue = false;
-                for (const field of step.fields) {
-                    const fieldName = field.id.replace('field-', '');
-                    const inputEl = document.getElementById(`rq-${fieldName}-${blockId}`);
-                    let displayValue = '';
-                    if (field.type === 'file') {
-                        const files = inputEl?._rq_files || (inputEl?.files ? Array.from(inputEl.files) : []);
-                        if (files.length > 0) {
-                            const fileDataUrls = await Promise.all(files.map(file => {
-                                return new Promise((resolve) => {
-                                    const reader = new FileReader();
-                                    reader.onload = (e) => resolve(e.target.result);
-                                    reader.onerror = () => resolve(null);
-                                    reader.readAsDataURL(file);
-                                });
-                            }));
-                            displayValue = '<div class="rq-review-image-grid">';
-                            fileDataUrls.forEach(url => {
-                                if (url) displayValue += `<div class="rq-review-image-item"><img src="${url}"></div>`;
-                            });
-                            displayValue += '</div>';
-                        }
-                    } else if (inputEl) {
-                        displayValue = inputEl.value.trim();
-                    }
-
-                    if (displayValue) {
-                        hasValue = true;
-                        stepFieldsHtml += `
-                            <div class="rq-review-card">
-                                <div class="rq-card-header"><h4>${field.label}</h4></div>
-                                <div class="rq-card-content">
-                                    <div class="${field.type === 'file' ? 'rq-review-files' : 'rq-review-text'}">${displayValue}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-                if (hasValue) {
-                    customHtml += `<div class="rq-review-section-header">${step.title}</div><div class="rq-review-grid">${stepFieldsHtml}</div>`;
-                }
-            }
-            customFieldsContainer.innerHTML = customHtml;
-        }
-    }
-
-    window.rqNextStep = async function (blockId, currentStep) {
-        let isValid = false;
-        if (window.RqValidation && window.RqValidation.validateStep) {
-            isValid = window.RqValidation.validateStep(blockId, currentStep);
-        }
-
-        if (isValid) {
-            const nextStepContainer = document.getElementById('rq-step-' + (currentStep + 1) + '-' + blockId);
-            if (!nextStepContainer) return;
-
-            const isReviewStep = nextStepContainer.querySelector('.rq-review-container') !== null;
-            if (isReviewStep) {
-                await rqPopulateReviewStep(blockId);
-            }
-
-            document.getElementById('rq-step-' + currentStep + '-' + blockId).classList.remove('active');
-            nextStepContainer.classList.add('active');
-
-            if (window.RqUi && window.RqUi.updateProgressIndicator) {
-                window.RqUi.updateProgressIndicator(blockId, currentStep + 1);
-            }
-        }
-    };
-
-    window.rqPrevStep = function (blockId, currentStep) {
-        const prev = document.getElementById('rq-step-' + (currentStep - 1) + '-' + blockId);
-        if(!prev) return;
-        document.getElementById('rq-step-' + currentStep + '-' + blockId).classList.remove('active');
-        prev.classList.add('active');
-        if (window.RqUi && window.RqUi.updateProgressIndicator) {
-            window.RqUi.updateProgressIndicator(blockId, currentStep - 1);
-        }
-    };
-
     window.rqValidateAndSubmit = async function (blockId) {
         const modal = document.getElementById(`rqModal-${blockId}`);
         const isBulk = modal?.dataset.isBulk === 'true';
         const cartItems = isBulk ? window.RqCart.getCart() : null;
 
         const btn = document.querySelector(`#rq-step-input-${blockId} button.rq-submit-final`);
+        
+        // Validate entire form first
+        if (window.RqValidation && window.RqValidation.validateStep) {
+            if (!window.RqValidation.validateStep(blockId, 'all')) {
+                return;
+            }
+        }
+
         const originalText = btn ? btn.innerHTML : 'Submit Quote';
         if (btn) {
             btn.innerText = 'Requesting...';
