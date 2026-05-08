@@ -20,38 +20,19 @@ import {
     SortableContext,
     verticalListSortingStrategy,
     useSortable,
-    arrayMove,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { IForm, IFormField } from '../../api/forms';
+import { 
+    TYPE_LABEL, 
+    FIELD_OPTIONS, 
+    getStandardFields 
+} from './BuilderCanvas.utils';
 
 interface BuilderCanvasProps {
     formState: IForm;
     setFormState: (form: IForm) => void;
 }
-
-const TYPE_LABEL: Record<string, string> = {
-    text: 'Text Input',
-    email: 'Email Address',
-    phone: 'Phone Number',
-    number: 'Number Field',
-    textarea: 'Paragraph Text',
-    select: 'Dropdown Menu',
-    checkbox: 'Checkbox Group',
-    radio: 'Radio Buttons',
-    file: 'File Upload',
-    price: 'Price Field',
-};
-
-const FIELD_OPTIONS = [
-    { type: 'text', label: 'Single Line' },
-    { type: 'textarea', label: 'Paragraph' },
-    { type: 'select', label: 'Dropdown' },
-    { type: 'checkbox', label: 'Checkbox' },
-    { type: 'radio', label: 'Single Choice' },
-    { type: 'file', label: 'File Upload' },
-    { type: 'price', label: 'Price Field' },
-];
 
 export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ formState, setFormState }) => {
     const [activePopover, setActivePopover] = React.useState<string | null>(null);
@@ -100,49 +81,13 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ formState, setForm
         setActivePopover(null);
     };
 
-    const onReorder = (stepId: string, activeId: string, overId: string) => {
-        const step = formState.steps.find(s => s.id === stepId);
-        if (!step) return;
-
-        const oldIndex = step.fields.findIndex(f => f.id === activeId);
-        const newIndex = step.fields.findIndex(f => f.id === overId);
-
-        const updatedSteps = formState.steps.map(s => {
-            if (s.id !== stepId) return s;
-            return {
-                ...s,
-                fields: arrayMove(s.fields, oldIndex, newIndex)
-            };
-        });
-        setFormState({ ...formState, steps: updatedSteps });
-    };
-
     const resetToStandard = (stepId: string) => {
-        const standardFieldsMap: Record<string, any[]> = {
-            'contact-info': [
-                { id: `f-${Date.now()}-1`, type: 'text', label: 'First Name', required: true, placeholder: 'Enter first name...', helpText: '' },
-                { id: `f-${Date.now()}-2`, type: 'text', label: 'Last Name', required: true, placeholder: 'Enter last name...', helpText: '' },
-                { id: `f-${Date.now()}-3`, type: 'email', label: 'Email Address', required: true, placeholder: 'Enter email address...', helpText: '' },
-                { id: `f-${Date.now()}-4`, type: 'phone', label: 'Phone Number', required: false, placeholder: 'Phone number', helpText: '' },
-            ],
-            'address-info': [
-                { id: `f-${Date.now()}-5`, type: 'text', label: 'Address Line 1', required: true, placeholder: 'Enter address line 1...', helpText: '' },
-                { id: `f-${Date.now()}-6`, type: 'text', label: 'Address Line 2', required: false, placeholder: 'Enter address line 2...', helpText: '' },
-                { id: `f-${Date.now()}-7`, type: 'text', label: 'City', required: true, placeholder: 'Enter city...', helpText: '' },
-                { id: `f-${Date.now()}-8`, type: 'text', label: 'State', required: true, placeholder: 'Enter state...', helpText: '' },
-                { id: `f-${Date.now()}-9`, type: 'text', label: 'Pincode', required: true, placeholder: 'Enter pincode...', helpText: '' },
-                { id: `f-${Date.now()}-10`, type: 'text', label: 'Country', required: true, placeholder: 'Enter country...', helpText: '' },
-            ],
-            'details-info': [
-                { id: `f-${Date.now()}-11`, type: 'textarea', label: 'Additional Message', required: false, placeholder: 'Enter any additional details...', helpText: '' },
-            ]
-        };
-
+        const fields = getStandardFields(stepId);
         const updatedSteps = formState.steps.map(s => {
             if (s.id !== stepId) return s;
             return {
                 ...s,
-                fields: standardFieldsMap[stepId] || []
+                fields
             };
         });
         setFormState({ ...formState, steps: updatedSteps });

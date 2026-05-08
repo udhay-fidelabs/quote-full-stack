@@ -28,7 +28,8 @@ import {
 import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
 import { useFormBuilder } from '../hooks/useFormBuilder';
 import { PageLoader } from '../components/loaders/PageLoader';
-import { Sidebar, parseSidebarDragId } from '../components/FormBuilder/Sidebar';
+import { Sidebar } from '../components/FormBuilder/Sidebar';
+import { parseSidebarDragId } from '../components/FormBuilder/Sidebar.utils';
 import { BuilderCanvas } from '../components/FormBuilder/BuilderCanvas';
 import { FormPreview } from '../components/FormBuilder/FormPreview';
 import { QuoteForm } from '../components/FormBuilder/QuoteForm';
@@ -72,28 +73,6 @@ export const FormBuilder: React.FC = () => {
         );
     }
 
-    const addElementToForm = (elementType: string, elementLabel: string) => {
-        if (!formState || formState.steps.length === 0) return;
-
-        const updated = {
-            ...formState,
-            steps: formState.steps.map((s, si) =>
-                si !== 0 ? s : {
-                    ...s,
-                    fields: [
-                        ...s.fields,
-                        {
-                            id: `field-${Date.now()}`,
-                            type: elementType,
-                            label: elementLabel,
-                            required: false,
-                        },
-                    ],
-                }
-            ),
-        };
-        setFormState(updated);
-    };
 
     const handleDragStart = (event: DragStartEvent) => {
         const data = event.active.data.current as { type?: string; elementLabel?: string } | undefined;
@@ -246,7 +225,7 @@ export const FormBuilder: React.FC = () => {
                                 {/* Sidebar palette - only in Builder tab */}
                                 {selectedTab === 0 && (
                                     <aside className="w-[280px] h-full flex-shrink-0 border-r border-gray-100 bg-gray-50/30 overflow-y-auto scrollbar-hide">
-                                        <Sidebar onAddElement={addElementToForm} />
+                                        <Sidebar />
                                     </aside>
                                 )}
 

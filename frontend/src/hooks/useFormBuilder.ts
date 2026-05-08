@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getForm, updateForm, type IForm } from '../api/forms';
+import { getForm, updateForm, type IForm, type IFormStep, type IFormField } from '../api/forms';
 import { usePlanUsage } from '../hooks/usePlanUsage';
 
 export function useFormBuilder() {
@@ -17,10 +17,10 @@ export function useFormBuilder() {
                 const data = await getForm();
 
                 // Ensure we have exactly 3 steps for the new segmented builder experience
-                const requiredSteps = [
-                    { id: 'contact-info', title: 'Contact Information', fields: [] as any[] },
-                    { id: 'address-info', title: 'Shipping Address', fields: [] as any[] },
-                    { id: 'details-info', title: 'Additional Details', fields: [] as any[] }
+                const requiredSteps: IFormStep[] = [
+                    { id: 'contact-info', title: 'Contact Information', fields: [] as IFormField[] },
+                    { id: 'address-info', title: 'Shipping Address', fields: [] as IFormField[] },
+                    { id: 'details-info', title: 'Additional Details', fields: [] as IFormField[] }
                 ];
 
                 if (data.steps && data.steps.length > 0) {

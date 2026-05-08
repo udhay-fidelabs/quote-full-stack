@@ -15,41 +15,23 @@ import {
     ClipboardChecklistIcon,
 } from '@shopify/polaris-icons';
 import { useDraggable } from '@dnd-kit/core';
+import { 
+    BASIC_ELEMENTS, 
+    CUSTOM_ELEMENTS, 
+    type SidebarElementDef 
+} from './Sidebar.utils';
 
-export interface SidebarElementDef {
-    type: string;
-    label: string;
-    icon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-    color?: string;
-}
-
-const BASIC_ELEMENTS: SidebarElementDef[] = [
-    { type: 'text', label: 'Full Name' },
-    { type: 'email', label: 'Email Address' },
-    { type: 'phone', label: 'Phone Number' },
-    { type: 'text', label: 'City' },
-    { type: 'text', label: 'State' },
-    { type: 'text', label: 'Pincode' },
-    { type: 'text', label: 'Country' },
-    { type: 'textarea', label: 'Message' },
-];
-
-const CUSTOM_ELEMENTS: SidebarElementDef[] = [
-    { type: 'text', label: 'Single Line', icon: TextIcon, color: '#5c5f62' },
-    { type: 'textarea', label: 'Paragraph', icon: TextBlockIcon, color: '#5c5f62' },
-    { type: 'heading', label: 'Heading', icon: TextTitleIcon, color: '#5c5f62' },
-    { type: 'select', label: 'Dropdown', icon: SelectIcon, color: '#5c5f62' },
-    { type: 'checkbox', label: 'Checkbox', icon: ClipboardChecklistIcon, color: '#5c5f62' },
-    { type: 'radio', label: 'Single Choice', icon: SelectIcon, color: '#5c5f62' },
-    { type: 'file', label: 'File Upload', icon: UploadIcon, color: '#5c5f62' },
-    { type: 'price', label: 'Price Field', icon: CashDollarIcon, color: '#5c5f62' },
-];
-
-export function parseSidebarDragId(id: string): { type: string; label: string } | null {
-    const parts = id.split('::');
-    if (parts[0] !== 'sidebar' || parts.length < 3) return null;
-    return { type: parts[1], label: parts[2] };
-}
+// Map icons for custom elements
+const ICON_MAP: Record<string, React.FunctionComponent<React.SVGProps<SVGSVGElement>>> = {
+    'Single Line': TextIcon,
+    'Paragraph': TextBlockIcon,
+    'Heading': TextTitleIcon,
+    'Dropdown': SelectIcon,
+    'Checkbox': ClipboardChecklistIcon,
+    'Single Choice': SelectIcon,
+    'File Upload': UploadIcon,
+    'Price Field': CashDollarIcon,
+};
 
 interface DraggableTileProps {
     el: SidebarElementDef;
@@ -63,6 +45,8 @@ const DraggableTile: React.FC<DraggableTileProps> = ({ el, withIcon }) => {
         data: { type: 'sidebar', elementType: el.type, elementLabel: el.label },
     });
 
+    const icon = ICON_MAP[el.label];
+
     return (
         <div
             ref={setNodeRef}
@@ -71,9 +55,9 @@ const DraggableTile: React.FC<DraggableTileProps> = ({ el, withIcon }) => {
             className={`group select-none touch-none ${isDragging ? 'opacity-40' : 'opacity-100'}`}
         >
             <div className="flex flex-col items-center justify-center p-3 bg-white border border-gray-200 rounded-xl cursor-grab transition-all duration-200 hover:border-indigo-400 hover:shadow-md active:scale-95 active:shadow-inner">
-                {withIcon && el.icon ? (
+                {withIcon && icon ? (
                     <div className="w-8 h-8 mb-2 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
-                        <Icon source={el.icon} tone="subdued" />
+                        <Icon source={icon} tone="subdued" />
                     </div>
                 ) : null}
                 <span className="text-[11px] font-semibold text-gray-600 group-hover:text-indigo-600 text-center leading-tight">
@@ -84,11 +68,7 @@ const DraggableTile: React.FC<DraggableTileProps> = ({ el, withIcon }) => {
     );
 };
 
-interface SidebarProps {
-    onAddElement: (type: string, label: string) => void;
-}
-
-export const Sidebar: React.FC<SidebarProps> = ({ onAddElement: _onAddElement }) => {
+export const Sidebar: React.FC = () => {
     const [search, setSearch] = useState('');
 
     const filtered = (arr: SidebarElementDef[]) =>
