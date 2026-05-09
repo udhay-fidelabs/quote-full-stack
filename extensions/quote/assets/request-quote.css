@@ -1223,7 +1223,7 @@
         overflow-y: auto !important;
         height: 100% !important;
         width: 100% !important;
-        display: flex !important;
+        display: flex; /* Remove !important to allow JS to hide/show */
     }
 
     .rq-column-left,
@@ -1800,7 +1800,7 @@
     }
     
     .rq-form-container {
-        display: flex !important;
+        display: flex; /* Remove !important */
         flex-direction: column !important;
         height: 100vh !important;
         width: 100vw !important;
@@ -1849,7 +1849,7 @@
 @media (max-width: 640px) {
     .rq-success-screen {
         margin: auto !important;
-        display: flex !important;
+        /* Remove forced display: flex !important to respect visibility logic */
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;

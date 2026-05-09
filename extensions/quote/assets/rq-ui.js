@@ -537,7 +537,7 @@
 
             document.getElementById(`rq-form-container-${blockId}`).style.display = 'none';
             const successEl = document.getElementById(`rq-step-success-${blockId}`);
-            if (successEl) successEl.style.display = 'block';
+            if (successEl) successEl.style.display = 'flex';
 
             const progressWrapper = document.querySelector(`#rqModal-${blockId} .rq-progress-wrapper`);
             if (progressWrapper) progressWrapper.style.display = 'none';
