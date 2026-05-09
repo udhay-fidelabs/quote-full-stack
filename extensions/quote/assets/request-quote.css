@@ -241,13 +241,13 @@
     border-right: 1px solid var(--rq-border);
     display: flex;
     flex-direction: column;
-    padding: 40px 32px;
+    padding: 24px 20px;
     overflow-y: auto;
 }
 
 .rq-column-right {
     width: 60%;
-    padding: 40px 40px 32px;
+    padding: 24px 24px 20px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -259,7 +259,7 @@
 
 /* Progress Indicator */
 .rq-progress-wrapper {
-    margin-bottom: 32px;
+    margin-bottom: 20px;
     width: 100%;
     max-width: 650px;
     margin-left: auto;
@@ -465,11 +465,11 @@
     flex-wrap: wrap;
     justify-content: space-between;
     width: 100%;
-    padding: 10px 0;
+    padding: 4px 0;
 }
 
 .rq-input-group {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     width: 100%;
 }
 
@@ -515,7 +515,7 @@
 .rq-input-group input,
 .rq-input-group textarea {
     width: 100%;
-    padding: 14px 16px;
+    padding: 11px 14px;
     border: 2px solid #e5e7eb;
     border-radius: var(--rq-radius-sm);
     font-size: 15px;
@@ -544,7 +544,7 @@
 .rq-form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 12px;
 }
 
 /* Image Upload & Dropzone */
@@ -556,7 +556,7 @@
 .rq-dropzone {
     border: 2px dashed #e5e7eb;
     border-radius: var(--rq-radius);
-    padding: 32px 20px;
+    padding: 20px 16px;
     text-align: center;
     background: #f9fafb;
     cursor: pointer;

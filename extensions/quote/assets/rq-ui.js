@@ -277,10 +277,10 @@
             cart.forEach(item => {
                 const itemPriceTotal = window.RqCart ? window.RqCart.formatPrice(item.price * (parseInt(item.quantity) || 1)) : '';
                 itemsHtml += `
-                    <div class="rq-product-summary" style="margin-bottom: 16px; padding: 16px; border: 1px solid #f3f4f6; border-radius: 16px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; gap: 16px; align-items: stretch; position: relative;">
-                        <img src="${item.featured_image || ''}" alt="${item.title}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid #f3f4f6; flex-shrink: 0;">
+                    <div class="rq-product-summary" style="margin-bottom: 12px; padding: 12px; border: 1px solid #f3f4f6; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; gap: 12px; align-items: stretch; position: relative;">
+                        <img src="${item.featured_image || ''}" alt="${item.title}" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #f3f4f6; flex-shrink: 0;">
                         
-                        <div style="flex: 1; display: flex; flex-direction: column; min-height: 80px; min-width: 0;">
+                        <div style="flex: 1; display: flex; flex-direction: column; min-height: 64px; min-width: 0;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
                                 <div class="rq-product-title" style="font-size: 15px; font-weight: 700; color: #111827; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; flex: 1; padding-right: 12px;">${item.title}</div>
                                 <button class="rq-cart-item-remove" onclick="window.RqCart.removeItem('${item.variantId}', '${blockId}')" 
@@ -292,7 +292,7 @@
                             </div>
                             <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: auto;">${item.variantTitle && item.variantTitle !== 'Default Title' ? item.variantTitle : 'Standard'}</div>
                             
-                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px;">
                                 <div class="rq-qty-controls" style="display: flex; align-items: center; background: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb; height: 32px; padding: 2px;">
                                     <button onclick="window.RqCart.updateQuantity('${item.variantId}', -1, '${blockId}')" 
                                             style="width: 28px; height: 100%; border: none; background: #fff; border-radius: 8px; cursor: pointer; color: #6b7280; display: flex; align-items: center; justify-content: center; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
@@ -317,12 +317,12 @@
                         ${itemsHtml}
                     </div>
                     
-                    <div style="margin-top: 24px; padding: 20px; background: #f9fafb; border-radius: 16px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div style="margin-top: 16px; padding: 16px; background: #f9fafb; border-radius: 16px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                             <span style="font-size: 14px; color: #6b7280; font-weight: 600;">Estimate Subtotal (${count} items)</span>
                             <span style="font-size: 24px; font-weight: 800; color: #111827; letter-spacing: -0.5px;">${totalText}</span>
                         </div>
-                        <div style="height: 1px; background: #e5e7eb; margin: 12px 0;"></div>
+                        <div style="height: 1px; background: #e5e7eb; margin: 8px 0;"></div>
                         <p style="font-size: 12px; color: #6b7280; margin: 0; display: flex; align-items: center; gap: 6px; font-weight: 500;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                             Final quote includes applicable taxes and shipping.
@@ -373,27 +373,27 @@
             formConfig.steps.forEach((step, index) => {
                 if (step.id === 'step-review') return;
 
-                html += `<div class="rq-step active" style="margin-bottom: 40px; animation: fadeIn 0.5s ease-out;">`;
+                html += `<div class="rq-step active" style="margin-bottom: 24px;">`;
                 if (step.title) {
-                    html += `<h3 class="rq-step-title" style="font-size: 20px; font-weight: 800; color: #111827; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #f3f4f6; display: flex; align-items: center; gap: 12px;">
-                        <span style="background: #111827; color: white; width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); transform: rotate(-5deg);">${index + 1}</span>
+                    html += `<h3 class="rq-step-title" style="font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: #111827; color: white; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px;">${index + 1}</span>
                         ${step.title}
                     </h3>`;
                 }
 
-                html += `<div class="rq-step-content" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">`;
+                html += `<div class="rq-step-content" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">`;
                 step.fields.forEach(field => {
                     const isFull = field.layoutWidth === 'full' || field.type === 'textarea' || field.type === 'file';
                     const gridSpan = isFull ? 'grid-column: span 2;' : '';
                     
                     html += `<div class="rq-input-group" style="${gridSpan} margin-bottom: 0;">`;
-                    html += `<label style="display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 8px;">${field.label} ${field.required ? '<span class="rq-required" style="color: #ef4444;">*</span>' : ''}</label>`;
+                    html += `<label style="display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 4px;">${field.label} ${field.required ? '<span class="rq-required" style="color: #ef4444;">*</span>' : ''}</label>`;
 
                     const fieldName = field.id.replace('field-', '');
                     const fieldId = `rq-${fieldName}-${blockId}`;
                     const requiredAttr = field.required ? 'required' : '';
 
-                    let attrs = `style="width: 100%; padding: 14px 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; transition: all 0.2s; outline: none; background: #fff; color: #111827;" ${requiredAttr}`;
+                    let attrs = `style="width: 100%; padding: 11px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; background: #fff; color: #111827;" ${requiredAttr}`;
                     
                     if (field.minLength) attrs += ` minlength="${field.minLength}"`;
                     if (field.maxLength) attrs += ` maxlength="${field.maxLength}"`;
@@ -411,7 +411,7 @@
                         html += `
                             <div class="rq-image-upload-wrapper" id="rq-file-wrapper-${fieldId}" style="margin-top: 4px;">
                                 <div class="rq-dropzone" onclick="document.getElementById('${fieldId}').click()" 
-                                     style="border: 2px dashed #e5e7eb; border-radius: 16px; padding: 32px; text-align: center; background: #f9fafb; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 12px;"
+                                     style="border: 2px dashed #e5e7eb; border-radius: 16px; padding: 20px 16px; text-align: center; background: #f9fafb; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px;"
                                      onmouseover="this.style.borderColor='#111827'; this.style.background='#f9fafb';"
                                      onmouseout="this.style.borderColor='#e5e7eb'; this.style.background='#f9fafb';">
                                     <div style="background: #f3f4f6; color: #111827; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 4px;">${fileIcon}</div>
@@ -431,7 +431,7 @@
                                     <div style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; display: flex; align-items: center; transition: color 0.2s;">${hasIcon}</div>
                                     <input type="${field.type === 'email' ? 'email' : (field.type === 'phone' ? 'tel' : 'text')}" 
                                            name="${fieldName}" id="${fieldId}" ${attrs} 
-                                           style="width: 100%; padding: 14px 16px 14px 48px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; transition: all 0.2s; outline: none; background: #fff;"
+                                           style="width: 100%; padding: 11px 14px 11px 44px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; background: #fff;"
                                            onfocus="this.style.borderColor='#111827'; this.style.boxShadow='0 0 0 4px rgba(0, 0, 0, 0.1)'; this.previousElementSibling.style.color='#111827';"
                                            onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'; this.previousElementSibling.style.color='#9ca3af';">
                                 </div>`;
@@ -441,7 +441,7 @@
                                            onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">`;
                         }
                     }
-                    html += `<span class="rq-error" id="rq-error-${fieldName}-${blockId}" style="display: block; color: #ef4444; font-size: 12px; margin-top: 6px; min-height: 18px; font-weight: 500;"></span>`;
+                    html += `<span class="rq-error" id="rq-error-${fieldName}-${blockId}" style="display: block; color: #ef4444; font-size: 12px; margin-top: 4px; min-height: 18px; font-weight: 500;"></span>`;
                     html += `</div>`;
                 });
                 html += `</div>`;
