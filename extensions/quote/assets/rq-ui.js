@@ -88,11 +88,11 @@
             `;
         },
 
-        updateSingleQty: function(blockId, delta, explicitVal = null) {
+        updateSingleQty: function (blockId, delta, explicitVal = null) {
             const qtyInput = document.getElementById(`rq-single-qty-input-${blockId}`);
             const form = document.getElementById(`rq-form-${blockId}`);
             const qtyInputHidden = form?.querySelector('input[name="quantity"]');
-            
+
             if (qtyInput && qtyInputHidden) {
                 let newVal = explicitVal !== null ? parseInt(explicitVal) : (parseInt(qtyInput.value) || 1) + delta;
                 if (isNaN(newVal) || newVal < 1) newVal = 1;
@@ -101,19 +101,19 @@
             }
         },
 
-        resetToEmpty: function(blockId) {
+        resetToEmpty: function (blockId) {
             const listContainer = document.getElementById(`rq-cart-items-list-${blockId}`);
             if (listContainer) listContainer.innerHTML = '';
-            
+
             const modal = document.getElementById(`rqModal-${blockId}`);
             if (modal) {
                 modal.dataset.isBulk = 'true'; // Switch to bulk mode so it shows empty cart next time
             }
-            
+
             window.rqCloseModal(blockId);
         },
 
-        rqOpenProductSelector: function(blockId) {
+        rqOpenProductSelector: function (blockId) {
             // Create or get the picker modal element
             let picker = document.getElementById(`rq-picker-${blockId}`);
             if (!picker) {
@@ -121,7 +121,7 @@
                 picker.id = `rq-picker-${blockId}`;
                 picker.className = 'rq-picker-modal';
                 picker.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;';
-                
+
                 picker.innerHTML = `
                     <div style="background: white; width: 90%; max-width: 500px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); overflow: hidden; transform: translateY(20px); transition: transform 0.3s ease;">
                         <div style="padding: 24px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center;">
@@ -160,7 +160,7 @@
             }, 10);
         },
 
-        cancelProductSelector: function(blockId) {
+        cancelProductSelector: function (blockId) {
             const picker = document.getElementById(`rq-picker-${blockId}`);
             if (picker) {
                 picker.style.opacity = '0';
@@ -169,7 +169,7 @@
             }
         },
 
-        rqHandleProductSearch: async function(query, blockId) {
+        rqHandleProductSearch: async function (query, blockId) {
             const resultsContainer = document.getElementById(`rq-search-results-${blockId}`);
             if (!resultsContainer) return;
 
@@ -205,7 +205,7 @@
             }
         },
 
-        rqAddFromSelector: async function(handle, blockId) {
+        rqAddFromSelector: async function (handle, blockId) {
             try {
                 const product = await window.RqApi.fetchProduct(handle);
                 if (product) {
@@ -219,7 +219,7 @@
                         quantity: 1,
                         handle: handle
                     };
-                    
+
                     // If it was a single product request, we need to convert to bulk mode
                     const modal = document.getElementById(`rqModal-${blockId}`);
                     if (modal && modal.dataset.isBulk !== 'true') {
@@ -336,18 +336,13 @@
             const container = document.getElementById(`rq-dynamic-form-${blockId}`);
             if (!container || !formConfig || !formConfig.steps) return;
 
-            // Update main header title and description if present
             const formTitle = document.getElementById(`rq-form-title-${blockId}`);
             const formDesc = document.getElementById(`rq-form-desc-${blockId}`);
             if (formTitle && formConfig.title) formTitle.innerText = formConfig.title;
             if (formDesc && formConfig.description) formDesc.innerText = formConfig.description;
 
-            const emailIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`;
-            const phoneIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>`;
             const submitIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`;
             const fileIcon = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`;
-            const locationIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
-            const userIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
 
             let html = '<div class="rq-single-page-form-container">';
 
@@ -362,14 +357,14 @@
                     </h3>`;
                 }
 
-                html += `<div class="rq-step-content" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">`;
+                html += `<div class="rq-step-content">`;
                 step.fields.forEach(field => {
                     const isFull = field.layoutWidth === 'full' || field.type === 'textarea' || field.type === 'file';
                     const gridSpan = isFull ? 'grid-column: span 2;' : '';
-                    
+
                     html += `<div class="rq-input-group" style="${gridSpan} margin-bottom: 0;">`;
                     html += `<label style="display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 4px;">${field.label} ${field.required ? '<span class="rq-required" style="color: #ef4444;">*</span>' : ''}</label>`;
-                    
+
                     if (field.description) {
                         html += `<p style="font-size: 11px; color: #6b7280; margin: -2px 0 6px 0; font-weight: 500; line-height: 1.4;">${field.description}</p>`;
                     }
@@ -379,14 +374,12 @@
                     const requiredAttr = field.required ? 'required' : '';
 
                     let attrs = `${requiredAttr}`;
-                    
+
                     if (field.minLength) attrs += ` minlength="${field.minLength}"`;
                     if (field.maxLength) attrs += ` maxlength="${field.maxLength}"`;
 
-                    const hasIcon = field.icon || (field.type === 'email' ? emailIcon : (field.type === 'phone' ? phoneIcon : null));
-
                     if (field.type === 'textarea') {
-                        html += `<textarea name="${fieldName}" id="${fieldId}" rows="4" placeholder="Enter your message here..." class="rq-form-input" ${attrs}></textarea>`;
+                        html += `<textarea name="${fieldName}" id="${fieldId}" rows="4" placeholder="${field.placeholder || 'Enter your message here...'}" class="rq-form-input" ${attrs}></textarea>`;
                     } else if (field.type === 'file') {
                         const isMultiple = field.allowMultiple || field.id.includes('multiple');
                         const maxFiles = isMultiple ? 3 : 1;
@@ -394,10 +387,10 @@
                         html += `
                             <div class="rq-image-upload-wrapper" id="rq-file-wrapper-${fieldId}" style="margin-top: 4px;">
                                 <div class="rq-dropzone" onclick="document.getElementById('${fieldId}').click()" 
-                                     style="border: 2px dashed #e5e7eb; border-radius: 16px; padding: 20px 16px; text-align: center; background: #f9fafb; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px;"
-                                     onmouseover="this.style.borderColor='#111827'; this.style.background='#f9fafb';"
+                                     style="border: 2px dashed #e5e7eb; border-radius: 16px; padding: 24px 16px; text-align: center; background: #f9fafb; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 12px; transition: all 0.2s;"
+                                     onmouseover="this.style.borderColor='#111827'; this.style.background='#f3f4f6';"
                                      onmouseout="this.style.borderColor='#e5e7eb'; this.style.background='#f9fafb';">
-                                    <div style="background: #f3f4f6; color: #111827; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 4px;">${fileIcon}</div>
+                                    <div style="background: #fff; color: #111827; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">${fileIcon}</div>
                                     <div>
                                         <div style="font-weight: 800; font-size: 15px; color: #111827; margin-bottom: 4px;">Upload Files</div>
                                         <div style="font-size: 12px; color: #6b7280; font-weight: 500;">PNG, JPG or PDF up to 5MB (Max ${maxFiles})</div>
@@ -408,17 +401,10 @@
                             </div>
                         `;
                     } else {
-                        if (hasIcon) {
-                            html += `
-                                <div class="rq-input-icon-wrapper">
-                                    ${hasIcon}
-                                    <input type="${field.type === 'email' ? 'email' : (field.type === 'phone' ? 'tel' : 'text')}" 
-                                           name="${fieldName}" id="${fieldId}" class="rq-form-input" ${attrs}>
-                                </div>`;
-                        } else {
-                            html += `<input type="${field.type === 'email' ? 'email' : (field.type === 'phone' ? 'tel' : 'text')}" 
-                                           name="${fieldName}" id="${fieldId}" class="rq-form-input" ${attrs}>`;
-                        }
+                        html += `<input type="${field.type === 'email' ? 'email' : (field.type === 'phone' || field.type === 'tel' ? 'tel' : 'text')}" 
+                                       name="${fieldName}" id="${fieldId}" placeholder="${field.placeholder || field.label || ''}" 
+                                       class="rq-form-input" ${attrs}
+                                       style="width: 100%; padding: 14px 16px; border: 2px solid #f3f4f6; border-radius: 12px; font-size: 15px; transition: all 0.2s; outline: none;">`;
                     }
                     html += `<span class="rq-error" id="rq-error-${fieldName}-${blockId}" style="display: block; color: #ef4444; font-size: 12px; margin-top: 4px; min-height: 18px; font-weight: 500;"></span>`;
                     html += `</div>`;
@@ -629,7 +615,7 @@
 
                 const img = document.createElement('img');
                 img.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
-                
+
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     img.src = e.target.result;

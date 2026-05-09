@@ -30,12 +30,10 @@
                     console.error("Failed to populate modal for product:", e);
                 }
             } else if (cart.length > 0) {
-                // If no handle but items in cart, show bulk
                 modal.dataset.isBulk = 'true';
                 window.RqUi.showBulkSummary(blockId, cart);
             } else {
-                // Empty state
-                modal.dataset.isBulk = 'true'; // Show bulk (empty) state
+                modal.dataset.isBulk = 'true';
                 window.RqUi.showBulkSummary(blockId, []);
             }
         }
@@ -81,7 +79,7 @@
     window.rqAddToQuoteCart = async function (handle, blockId, event) {
         const btn = event ? event.currentTarget : null;
         if (!btn) return;
-        
+
         const originalText = btn.innerHTML;
         btn.innerHTML = 'Adding...';
         btn.disabled = true;
@@ -94,7 +92,7 @@
 
                 const item = {
                     productId: product.id,
-                    variantId: product.variants[0].id, 
+                    variantId: product.variants[0].id,
                     title: product.title,
                     variantTitle: product.variants[0].title,
                     price: product.variants[0].price,
@@ -134,13 +132,13 @@
 
         const blockId = modal.id.replace('rqModal-', '');
         window.RqCart.closeCart();
-        
+
         // Force bulk mode
         modal.dataset.isBulk = 'true';
         window.RqUi.showBulkSummary(blockId, cart);
-        
+
         await window.rqOpenModal(blockId);
-        
+
         // Ensure it stays bulk
         modal.dataset.isBulk = 'true';
     };
@@ -302,7 +300,7 @@
 
     window.rqPrevStep = function (blockId, currentStep) {
         const prev = document.getElementById('rq-step-' + (currentStep - 1) + '-' + blockId);
-        if(!prev) return;
+        if (!prev) return;
         document.getElementById('rq-step-' + currentStep + '-' + blockId).classList.remove('active');
         prev.classList.add('active');
         if (window.RqUi && window.RqUi.updateProgressIndicator) {
@@ -336,7 +334,7 @@
             if (result.success) {
                 window.RqUi.showSuccess(blockId, result.data);
                 if (isBulk) {
-                    window.RqCart.saveCart([]); 
+                    window.RqCart.saveCart([]);
                     modal.dataset.isBulk = 'false';
                 }
             } else {
@@ -393,7 +391,7 @@
 
     function scanAndInject() {
         if (!SETTINGS.appEnabled || SETTINGS.shouldShow === false) return;
-        
+
         const productBlockExists = !!document.querySelector('.rq-product-page-form');
         const isProductPage = window.location.pathname.includes('/products/') || productBlockExists;
 
