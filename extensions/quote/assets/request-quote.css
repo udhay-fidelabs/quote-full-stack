@@ -233,11 +233,13 @@
     height: 100%;
     overflow: hidden;
     padding: 0;
-    gap: 24px; /* Added gap for separation */
+    gap: 32px; /* Increased gap */
+    justify-content: center; /* Center the cards */
 }
 
 .rq-column-left {
-    width: 33%;
+    width: 380px; /* Smaller, fixed width for cart */
+    flex-shrink: 0;
     background: #fff; /* Changed to white */
     border-radius: 16px; /* Card style */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -249,7 +251,8 @@
 }
 
 .rq-column-right {
-    width: 67%;
+    width: 100%;
+    max-width: 800px; /* Condensed form width */
     background: #fff; /* Card style */
     border-radius: 16px; /* Card style */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
