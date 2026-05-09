@@ -349,25 +349,6 @@
             const locationIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
             const userIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
 
-            // Mandatory high-end fields to ensure comprehensive contact info
-            const firstStep = formConfig.steps[0];
-            const allFieldIds = formConfig.steps.flatMap(s => s.fields.map(f => f.id));
-            
-            const mandatoryFields = [
-                { id: 'field-name', label: 'Full Name', type: 'text', required: true, icon: userIcon, layoutWidth: 'half' },
-                { id: 'field-customerEmail', label: 'Email Address', type: 'email', required: true, icon: emailIcon, layoutWidth: 'half' },
-                { id: 'field-phone', label: 'Phone Number', type: 'phone', required: false, icon: phoneIcon, layoutWidth: 'half' },
-                { id: 'field-company', label: 'Company Name', type: 'text', required: false, icon: null, layoutWidth: 'half' },
-                { id: 'field-shippingAddress', label: 'Shipping Address', type: 'text', required: true, icon: locationIcon, layoutWidth: 'full' },
-                { id: 'field-message', label: 'Additional Message', type: 'textarea', required: false, icon: null, layoutWidth: 'full' }
-            ];
-
-            mandatoryFields.forEach(mf => {
-                if (!allFieldIds.includes(mf.id)) {
-                    firstStep.fields.push(mf);
-                }
-            });
-
             let html = '<div class="rq-single-page-form-container">';
 
             formConfig.steps.forEach((step, index) => {
