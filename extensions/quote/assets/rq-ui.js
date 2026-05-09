@@ -378,7 +378,7 @@
                     const fieldId = `rq-${fieldName}-${blockId}`;
                     const requiredAttr = field.required ? 'required' : '';
 
-                    let attrs = `style="width: 100%; padding: 11px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; background: #fff; color: #111827;" ${requiredAttr}`;
+                    let attrs = `${requiredAttr}`;
                     
                     if (field.minLength) attrs += ` minlength="${field.minLength}"`;
                     if (field.maxLength) attrs += ` maxlength="${field.maxLength}"`;
@@ -386,9 +386,7 @@
                     const hasIcon = field.icon || (field.type === 'email' ? emailIcon : (field.type === 'phone' ? phoneIcon : null));
 
                     if (field.type === 'textarea') {
-                        html += `<textarea name="${fieldName}" id="${fieldId}" rows="4" placeholder="Enter your message here..." ${attrs}
-                                    onfocus="this.style.borderColor='#111827'; this.style.boxShadow='0 0 0 4px rgba(0, 0, 0, 0.1)';"
-                                    onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';"></textarea>`;
+                        html += `<textarea name="${fieldName}" id="${fieldId}" rows="4" placeholder="Enter your message here..." class="rq-form-input" ${attrs}></textarea>`;
                     } else if (field.type === 'file') {
                         const isMultiple = field.allowMultiple || field.id.includes('multiple');
                         const maxFiles = isMultiple ? 3 : 1;
@@ -412,18 +410,14 @@
                     } else {
                         if (hasIcon) {
                             html += `
-                                <div style="position: relative;">
-                                    <div style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; display: flex; align-items: center; transition: color 0.2s;">${hasIcon}</div>
+                                <div class="rq-input-icon-wrapper">
+                                    ${hasIcon}
                                     <input type="${field.type === 'email' ? 'email' : (field.type === 'phone' ? 'tel' : 'text')}" 
-                                           name="${fieldName}" id="${fieldId}" ${attrs} 
-                                           style="width: 100%; padding: 11px 14px 11px 44px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; background: #fff;"
-                                           onfocus="this.style.borderColor='#111827'; this.style.boxShadow='0 0 0 4px rgba(0, 0, 0, 0.1)'; this.previousElementSibling.style.color='#111827';"
-                                           onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'; this.previousElementSibling.style.color='#9ca3af';">
+                                           name="${fieldName}" id="${fieldId}" class="rq-form-input" ${attrs}>
                                 </div>`;
                         } else {
-                            html += `<input type="text" name="${fieldName}" id="${fieldId}" ${attrs}
-                                           onfocus="this.style.borderColor='#111827'; this.style.boxShadow='0 0 0 4px rgba(0, 0, 0, 0.1)';"
-                                           onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">`;
+                            html += `<input type="${field.type === 'email' ? 'email' : (field.type === 'phone' ? 'tel' : 'text')}" 
+                                           name="${fieldName}" id="${fieldId}" class="rq-form-input" ${attrs}>`;
                         }
                     }
                     html += `<span class="rq-error" id="rq-error-${fieldName}-${blockId}" style="display: block; color: #ef4444; font-size: 12px; margin-top: 4px; min-height: 18px; font-weight: 500;"></span>`;
