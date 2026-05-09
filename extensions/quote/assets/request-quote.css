@@ -12,8 +12,8 @@
 :root {
     --rq-primary: #008060;
     --rq-primary-hover: #006e52;
-    --rq-accent: #6366f1;
-    --rq-accent-hover: #4f46e5;
+    --rq-accent: #111827;
+    --rq-accent-hover: #000000;
     --rq-success: #10b981;
     --rq-bg: #ffffff;
     --rq-text: #202223;
@@ -21,7 +21,7 @@
     --rq-border: #e1e3e5;
     --rq-radius: 12px;
     --rq-radius-sm: 8px;
-    --rq-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --rq-transition: none;
     --rq-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
     --rq-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --rq-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -56,7 +56,6 @@
     width: fit-content;
     background: #fff;
     height: 46px;
-    transition: var(--rq-transition);
 }
 
 .rq-qty-controls:hover {
@@ -75,12 +74,10 @@
     align-items: center;
     justify-content: center;
     color: var(--rq-text);
-    transition: var(--rq-transition);
 }
 
 .rq-qty-btn:hover {
     color: var(--rq-accent);
-    transform: scale(1.1);
 }
 
 .rq-qty-input {
@@ -153,7 +150,6 @@
 
 .rq-btn:active,
 .rq-btn-injected:active {
-    transform: translateY(-1px);
 }
 
 /* Modal Styling - Premium & Modern */
@@ -169,7 +165,7 @@
     z-index: 100000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
+    transition: none;
 }
 
 .rq-modal.open {
@@ -190,20 +186,22 @@
 
 .rq-modal-content {
     background: #fff;
-    width: 90%;
-    max-width: 800px;
+    width: 95%;
+    max-width: 1100px; /* Increased for split layout */
     max-height: 90vh;
-    overflow-y: auto;
+    overflow: hidden; /* Changed to hidden, internal columns will scroll */
     border-radius: var(--rq-radius);
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    transform: scale(0.9) translateY(20px);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: none;
+    transition: none;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .rq-modal.open .rq-modal-content {
-    transform: scale(1) translateY(0);
+    transform: none;
 }
 
 .rq-modal-close {
@@ -221,24 +219,41 @@
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    transition: var(--rq-transition);
     color: var(--rq-text);
 }
 
 .rq-modal-close:hover {
     background: rgba(0, 0, 0, 0.1);
-    transform: rotate(90deg);
 }
 
 .rq-form-container {
-    padding: 40px 32px 32px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row; /* Split layout */
     width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
 }
 
-.rq-form-container form {
+.rq-column-left {
+    width: 40%;
+    background: #f8f9fa;
+    border-right: 1px solid var(--rq-border);
+    display: flex;
+    flex-direction: column;
+    padding: 40px 32px;
+    overflow-y: auto;
+}
+
+.rq-column-right {
+    width: 60%;
+    padding: 40px 40px 32px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.rq-column-right form {
     width: 100%;
 }
 
@@ -282,12 +297,10 @@
     font-weight: 600;
     font-size: 16px;
     color: #9ca3af;
-    transition: var(--rq-transition);
     position: relative;
 }
 
 .rq-progress-circle span {
-    transition: var(--rq-transition);
 }
 
 .rq-progress-check {
@@ -296,7 +309,6 @@
     height: 20px;
     opacity: 0;
     transform: scale(0);
-    transition: var(--rq-transition);
 }
 
 .rq-progress-step.active .rq-progress-circle {
@@ -326,7 +338,6 @@
     font-size: 12px;
     font-weight: 500;
     color: #9ca3af;
-    transition: var(--rq-transition);
 }
 
 .rq-progress-step.active .rq-progress-label,
@@ -341,7 +352,6 @@
     height: 3px;
     background: #e5e7eb;
     z-index: 1;
-    transition: var(--rq-transition);
 }
 
 
@@ -359,12 +369,10 @@
 .rq-form-header h2 {
     font-size: 26px;
     font-weight: 700;
+    color: #111827;
     margin: 0 0 8px 0;
-    color: var(--rq-text);
-    background: linear-gradient(135deg, #000 0%, #333 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 26px;
+    font-weight: 700;
 }
 
 .rq-form-header p {
@@ -383,7 +391,6 @@
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-radius: var(--rq-radius);
     border: 1px solid var(--rq-border);
-    transition: var(--rq-transition);
     max-width: 650px;
     width: 100%;
 }
@@ -399,10 +406,39 @@
     height: 64px !important;
     min-width: 64px !important;
     object-fit: cover;
-    border-radius: 10px;
-    border: 2px solid white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    border: 1px solid var(--rq-border);
+    box-shadow: var(--rq-shadow-sm);
     flex-shrink: 0;
+}
+
+/* Add More Products Button */
+.rq-add-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    margin-top: 24px;
+    background: #fff;
+    border: 2px dashed var(--rq-border);
+    border-radius: var(--rq-radius-sm);
+    color: var(--rq-text);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.rq-add-more-btn:hover {
+    border-color: #9ca3af;
+    background: #f9fafb;
+    color: #111827;
+}
+
+.rq-add-more-btn svg {
+    width: 18px;
+    height: 18px;
 }
 
 .rq-product-info {
@@ -465,7 +501,6 @@
     transform: translateY(-50%);
     color: var(--rq-text-subdued);
     pointer-events: none;
-    transition: var(--rq-transition);
 }
 
 .rq-input-icon input {
@@ -485,7 +520,6 @@
     border-radius: var(--rq-radius-sm);
     font-size: 15px;
     outline: none;
-    transition: var(--rq-transition);
     background: white;
     color: var(--rq-text);
 }
@@ -526,7 +560,6 @@
     text-align: center;
     background: #f9fafb;
     cursor: pointer;
-    transition: var(--rq-transition);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -588,7 +621,6 @@
     background: #f8f9fa;
     border: 1px solid var(--rq-border);
     box-shadow: var(--rq-shadow-sm);
-    transition: var(--rq-transition);
 }
 
 .rq-preview-item:hover {
@@ -619,7 +651,6 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--rq-transition);
     z-index: 10;
 }
 
@@ -656,7 +687,7 @@
 .rq-submit-btn {
     width: 100%;
     height: 52px;
-    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+    background: var(--rq-accent);
     color: #fff;
     border: none;
     border-radius: var(--rq-radius-sm);
@@ -670,7 +701,6 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: var(--rq-transition);
     position: relative;
     overflow: hidden;
 }
@@ -702,7 +732,6 @@
 .rq-submit-btn svg {
     width: 20px;
     height: 20px;
-    transition: var(--rq-transition);
 }
 
 .rq-submit-btn:hover svg {
@@ -726,14 +755,24 @@
     font-weight: 500;
 }
 
-/* Multi-step Form Styles */
-.rq-step {
-    display: none;
-    animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+/* Single-page Form Styles */
+.rq-single-page-form .rq-step {
+    display: block !important; /* Force all steps to show */
+    animation: none;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--rq-border);
+    padding-bottom: 24px;
 }
 
-.rq-step.active {
-    display: block;
+.rq-single-page-form .rq-step:last-of-type {
+    border-bottom: none;
+}
+
+.rq-step-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    color: var(--rq-text);
 }
 
 @keyframes slideIn {
@@ -912,7 +951,6 @@
     border-radius: var(--rq-radius-sm);
     padding: 0;
     overflow: hidden;
-    transition: var(--rq-transition);
 }
 
 .rq-review-card:hover {
@@ -986,7 +1024,6 @@
     border: 2px solid #f3f4f6;
     background: #ffffff;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: var(--rq-transition);
     position: relative;
 }
 
@@ -1152,7 +1189,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--rq-transition);
 }
 
 .rq-qty-adjust:hover {
@@ -1199,11 +1235,9 @@
     cursor: pointer;
     z-index: 10000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: var(--rq-transition);
 }
 
 .rq-cart-floating-icon:hover {
-    transform: scale(1.1) translateY(-5px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
@@ -1344,7 +1378,6 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--rq-transition);
 }
 
 .rq-cart-item-qty-btn:hover {
@@ -1366,7 +1399,6 @@
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
-    transition: var(--rq-transition);
     display: flex;
     align-items: center;
     justify-content: center;

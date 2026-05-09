@@ -16,7 +16,6 @@
         addItem: function (item) {
             console.log('Adding to Quote Cart:', item);
             const cart = this.getCart();
-            // Check for same variant and price (to handle different prices if applicable)
             const existingIndex = cart.findIndex(i => String(i.variantId) === String(item.variantId));
 
             if (existingIndex > -1) {
@@ -34,37 +33,49 @@
                 });
             }
             this.saveCart(cart);
-            this.openCart();
         },
 
-        removeItem: function (variantId) {
+        removeItem: function (variantId, blockId = 'global') {
             let cart = this.getCart();
             cart = cart.filter(item => String(item.variantId) !== String(variantId));
             this.saveCart(cart);
+            this.refreshModalUI(blockId);
         },
 
-        updateQuantity: function (variantId, delta) {
+        updateQuantity: function (variantId, delta, blockId = 'global', explicitVal = null) {
             const cart = this.getCart();
             const item = cart.find(i => String(i.variantId) === String(variantId));
             if (item) {
-                item.quantity = (parseInt(item.quantity) || 1) + delta;
-                if (item.quantity < 1) {
-                    this.removeItem(variantId);
+                let newVal = explicitVal !== null ? parseInt(explicitVal) : (parseInt(item.quantity) || 1) + delta;
+                if (isNaN(newVal) || newVal < 1) {
+                    this.removeItem(variantId, blockId);
                 } else {
+                    item.quantity = newVal;
                     this.saveCart(cart);
+                    this.refreshModalUI(blockId);
+                }
+            }
+        },
+
+        refreshModalUI: function(blockId = 'global') {
+            const modal = document.getElementById(`rqModal-${blockId}`);
+            if (modal && modal.classList.contains('open') && modal.dataset.isBulk === 'true') {
+                const cart = this.getCart();
+                if (cart.length === 0) {
+                    window.rqCloseModal(blockId);
+                } else {
+                    window.RqUi.showBulkSummary(blockId, cart);
                 }
             }
         },
 
         openCart: function () {
-            const drawer = document.getElementById('rq-cart-drawer');
-            if (drawer) drawer.classList.add('open');
-            this.renderCart();
+            // Deprecated: opening unified modal instead
+            window.rqOpenQuoteFormFromCart();
         },
 
         closeCart: function () {
-            const drawer = document.getElementById('rq-cart-drawer');
-            if (drawer) drawer.classList.remove('open');
+            // Deprecated
         },
 
         updateBadge: function () {

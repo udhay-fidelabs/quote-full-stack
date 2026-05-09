@@ -13,23 +13,30 @@
         const modal = document.getElementById(`rqModal-${blockId}`);
         if (!modal) return;
 
-        if (!modal.dataset.isBulk || modal.dataset.isBulk === 'undefined') {
-            modal.dataset.isBulk = 'false';
-        }
-
-        if (modal.dataset.isBulk === 'false') {
+        if (!modal.dataset.isBulk || modal.dataset.isBulk === 'undefined' || modal.dataset.isBulk === 'false') {
             const handleMatch = window.location.pathname.match(/\/products\/([^\/\?]+)/);
-            if (handleMatch) {
-                const handle = handleMatch[1];
+            let handle = modal.dataset.handle || (handleMatch ? handleMatch[1] : null);
+            const cart = window.RqCart.getCart();
+
+            if (handle) {
                 try {
                     const product = await window.RqApi.fetchProduct(handle);
-                    if (product && window.RqUi.populateHiddenFields) {
+                    if (product && window.RqUi.showProductSummary) {
+                        modal.dataset.isBulk = 'false';
                         window.RqUi.populateHiddenFields(modal, product);
                         window.RqUi.showProductSummary(modal, product);
                     }
                 } catch (e) {
                     console.error("Failed to populate modal for product:", e);
                 }
+            } else if (cart.length > 0) {
+                // If no handle but items in cart, show bulk
+                modal.dataset.isBulk = 'true';
+                window.RqUi.showBulkSummary(blockId, cart);
+            } else {
+                // Empty state
+                modal.dataset.isBulk = 'true'; // Show bulk (empty) state
+                window.RqUi.showBulkSummary(blockId, []);
             }
         }
 
@@ -118,17 +125,23 @@
             return;
         }
 
-        const blockId = 'global';
-        const modal = document.getElementById(`rqModal-${blockId}`);
+        // Find the first available quote modal
+        const modal = document.querySelector('[id^="rqModal-"]');
         if (!modal) {
             alert('Quote modal not found.');
             return;
         }
 
+        const blockId = modal.id.replace('rqModal-', '');
         window.RqCart.closeCart();
-        window.RqUi.showBulkSummary(modal, cart);
+        
+        // Force bulk mode
         modal.dataset.isBulk = 'true';
+        window.RqUi.showBulkSummary(blockId, cart);
+        
         await window.rqOpenModal(blockId);
+        
+        // Ensure it stays bulk
         modal.dataset.isBulk = 'true';
     };
 
@@ -298,12 +311,21 @@
     };
 
     window.rqValidateAndSubmit = async function (blockId) {
+        if (window.RqValidation && window.RqValidation.validateAll) {
+            const isValid = window.RqValidation.validateAll(blockId);
+            if (!isValid) {
+                const firstError = document.querySelector('.rq-error:not(:empty)');
+                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+        }
+
         const modal = document.getElementById(`rqModal-${blockId}`);
         const isBulk = modal?.dataset.isBulk === 'true';
         const cartItems = isBulk ? window.RqCart.getCart() : null;
 
         const btn = document.querySelector(`#rq-step-input-${blockId} button.rq-submit-final`);
-        const originalText = btn ? btn.innerHTML : 'Submit Quote';
+        const originalText = btn ? btn.innerHTML : 'Submit Quote Request';
         if (btn) {
             btn.innerText = 'Requesting...';
             btn.disabled = true;

@@ -162,6 +162,18 @@
                 console.error(err);
                 return null;
             }
+        },
+
+        searchProducts: async function (query) {
+            try {
+                const res = await fetch(`/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=5`);
+                if (!res.ok) throw new Error('Search failed');
+                const data = await res.json();
+                return data.resources.results.products;
+            } catch (err) {
+                console.error('Search error:', err);
+                return [];
+            }
         }
     };
 })();
