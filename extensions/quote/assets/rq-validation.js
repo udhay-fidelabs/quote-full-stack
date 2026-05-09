@@ -5,11 +5,9 @@
             if (el) el.innerText = '';
         },
 
-        validateStep: function (blockId, targetId = 'all') {
+        validateStep: function (blockId, stepNum) {
             let isValid = true;
-            // Target can be a step number or the 'all' container
-            const containerId = targetId === 'all' ? `rq-step-all-${blockId}` : `rq-step-${targetId}-${blockId}`;
-            const stepContainer = document.getElementById(containerId);
+            const stepContainer = document.getElementById(`rq-step-${stepNum}-${blockId}`);
             if (!stepContainer) return isValid;
 
             const inputs = stepContainer.querySelectorAll('input, textarea, select');
