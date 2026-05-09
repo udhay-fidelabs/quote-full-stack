@@ -141,6 +141,24 @@ export const FormBuilder: React.FC = () => {
             const elementLabel = parsed?.label || activeData.elementLabel;
 
             if (elementType && elementLabel) {
+                // Prevent duplicate essential fields (Email, Phone) if they already exist
+                const isEssential = ['email', 'phone'].includes(elementType.toLowerCase()) || 
+                                   ['email address', 'phone number'].includes(elementLabel.toLowerCase());
+                
+                if (isEssential) {
+                    const exists = formState.steps.some(s => 
+                        s.fields.some(f => 
+                            f.type === elementType || f.label.toLowerCase() === elementLabel.toLowerCase()
+                        )
+                    );
+                    if (exists) {
+                        if (typeof shopify !== 'undefined') {
+                            shopify.toast.show(`${elementLabel} already exists in your form`, { isError: true });
+                        }
+                        return;
+                    }
+                }
+
                 // Find which step we dropped into
                 let targetStepIndex = 0;
                 const overStep = formState.steps.find(s => s.id === overId || s.fields.some(f => f.id === overId));
@@ -249,6 +267,17 @@ export const FormBuilder: React.FC = () => {
                                                             title: val
                                                         })}
                                                         helpText="The main heading shown at the top of your quote form."
+                                                        autoComplete="off"
+                                                    />
+                                                    <TextField
+                                                        label="Form Description"
+                                                        value={formState.description || ''}
+                                                        onChange={(val) => setFormState({
+                                                            ...formState,
+                                                            description: val
+                                                        })}
+                                                        helpText="A short instruction or description shown below the title."
+                                                        multiline={2}
                                                         autoComplete="off"
                                                     />
                                                 </BlockStack>

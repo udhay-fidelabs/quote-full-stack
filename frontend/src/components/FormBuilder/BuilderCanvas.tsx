@@ -109,7 +109,31 @@ export const BuilderCanvas: React.FC<BuilderCanvasProps> = ({ formState, setForm
                         <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                             <InlineStack gap="300" align="center">
                                 <div className="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                                <Text variant="headingMd" as="h2">{step.title}</Text>
+                                <TextField
+                                    label="Step Title"
+                                    labelHidden
+                                    value={step.title}
+                                    onChange={(val) => {
+                                        const updatedSteps = formState.steps.map(s => 
+                                            s.id === step.id ? { ...s, title: val } : s
+                                        );
+                                        setFormState({ ...formState, steps: updatedSteps });
+                                    }}
+                                    autoComplete="off"
+                                />
+                                <TextField
+                                    label="Step Description"
+                                    labelHidden
+                                    value={step.description || ''}
+                                    onChange={(val) => {
+                                        const updatedSteps = formState.steps.map(s => 
+                                            s.id === step.id ? { ...s, description: val } : s
+                                        );
+                                        setFormState({ ...formState, steps: updatedSteps });
+                                    }}
+                                    autoComplete="off"
+                                    placeholder="Add a step description..."
+                                />
                                 <Badge tone="info">{`${step.fields.length} Fields`}</Badge>
                             </InlineStack>
 

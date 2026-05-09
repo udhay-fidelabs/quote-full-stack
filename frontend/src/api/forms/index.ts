@@ -41,6 +41,7 @@ export interface IFormSettings {
 export interface IForm {
     shop: string;
     title: string;
+    description?: string;
     settings: IFormSettings;
     steps: IFormStep[];
 }

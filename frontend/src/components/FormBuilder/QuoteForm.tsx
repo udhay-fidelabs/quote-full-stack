@@ -136,7 +136,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({
                     {formState.title || 'Request a Quote'}
                 </h2>
                 <p style={{ fontSize: '14px', color: '#6d7175' }}>
-                    Please fill in the information below and we will get back to you with a custom quote.
+                    {formState.description || 'Please fill in the information below and we will get back to you with a custom quote.'}
                 </p>
             </div>
 
@@ -235,6 +235,11 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({
                                         }}>
                                             {step.title}
                                         </h4>
+                                        {step.description && (
+                                            <p style={{ fontSize: '11px', color: '#6d7175', margin: '2px 0 0' }}>
+                                                {step.description}
+                                            </p>
+                                        )}
                                     </div>
                                     
                                     <div style={{ 

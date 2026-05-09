@@ -26,40 +26,68 @@ export function useFormBuilder() {
                 if (data.steps && data.steps.length > 0) {
                     const allFields = data.steps.flatMap(step => step.fields);
                     
+                    // Deduplicate fields by ID to prevent repeated fields from previous bugs
+                    const uniqueFieldsMap = new Map<string, IFormField>();
+                    for (const f of allFields) {
+                        if (f && f.id && !uniqueFieldsMap.has(f.id)) {
+                            uniqueFieldsMap.set(f.id, f);
+                        }
+                    }
+                    const uniqueFields = Array.from(uniqueFieldsMap.values());
+
+                    const assignedFieldIds = new Set<string>();
+
                     // Re-distribute existing fields into the 3 new buckets based on labels
-                    requiredSteps[0].fields = allFields.filter(f => {
+                    // Step 0: Contact Info
+                    requiredSteps[0].fields = uniqueFields.filter(f => {
                         if (f.type === 'section') return false;
                         const l = (f.label || '').toLowerCase();
-                        return l.includes('name') || l.includes('email') || l.includes('phone');
+                        const isMatch = l.includes('name') || l.includes('email') || l.includes('phone');
+                        if (isMatch) assignedFieldIds.add(f.id);
+                        return isMatch;
                     });
                     
-                    requiredSteps[1].fields = allFields.filter(f => {
-                        if (f.type === 'section') return false;
+                    // Step 1: Address Info
+                    requiredSteps[1].fields = uniqueFields.filter(f => {
+                        if (f.type === 'section' || assignedFieldIds.has(f.id)) return false;
                         const l = (f.label || '').toLowerCase();
-                        return l.includes('address') || l.includes('city') || l.includes('country') || l.includes('pincode') || l.includes('state') || l.includes('district');
+                        const isMatch = l.includes('address') || l.includes('city') || l.includes('country') || l.includes('pincode') || l.includes('state') || l.includes('district');
+                        if (isMatch) assignedFieldIds.add(f.id);
+                        return isMatch;
                     });
 
-                    requiredSteps[2].fields = allFields.filter(f => {
+                    // Step 2: Additional Details
+                    requiredSteps[2].fields = uniqueFields.filter(f => {
                         if (f.type === 'section') return false;
                         const l = (f.label || '').toLowerCase();
-                        return l.includes('message') || l.includes('note') || l.includes('additional') || 
-                               (!requiredSteps[0].fields.includes(f) && !requiredSteps[1].fields.includes(f));
+                        const isMatch = l.includes('message') || l.includes('note') || l.includes('additional') || !assignedFieldIds.has(f.id);
+                        return isMatch;
+                    });
+
+                    // Preserve existing step metadata if available
+                    requiredSteps.forEach((rs, idx) => {
+                        const existing = data.steps[idx];
+                        if (existing) {
+                            rs.title = existing.title || rs.title;
+                            rs.description = existing.description || rs.description;
+                        }
                     });
 
                     data.steps = requiredSteps;
                 } else {
-                    // Default fields for a brand new form
+                    // Default fields for a brand new form with unique IDs
+                    const now = Date.now();
                     requiredSteps[0].fields = [
-                        { id: 'f-1', type: 'text', label: 'First Name', required: true, placeholder: 'Enter first name...' },
-                        { id: 'f-2', type: 'text', label: 'Last Name', required: true, placeholder: 'Enter last name...' },
-                        { id: 'f-3', type: 'email', label: 'Email Address', required: true, placeholder: 'Enter email address...' },
+                        { id: `f-${now}-1`, type: 'text', label: 'First Name', required: true, placeholder: 'Enter first name...' },
+                        { id: `f-${now}-2`, type: 'text', label: 'Last Name', required: true, placeholder: 'Enter last name...' },
+                        { id: `f-${now}-3`, type: 'email', label: 'Email Address', required: true, placeholder: 'Enter email address...' },
                     ];
                     requiredSteps[1].fields = [
-                        { id: 'f-5', type: 'text', label: 'Address Line 1', required: true, placeholder: 'Enter address line 1...' },
-                        { id: 'f-7', type: 'text', label: 'City', required: true, placeholder: 'Enter city...' },
+                        { id: `f-${now}-5`, type: 'text', label: 'Address Line 1', required: true, placeholder: 'Enter address line 1...' },
+                        { id: `f-${now}-7`, type: 'text', label: 'City', required: true, placeholder: 'Enter city...' },
                     ];
                     requiredSteps[2].fields = [
-                        { id: 'f-12', type: 'textarea', label: 'Additional Message', required: false, placeholder: 'Enter any additional details...' },
+                        { id: `f-${now}-12`, type: 'textarea', label: 'Additional Message', required: false, placeholder: 'Enter any additional details...' },
                     ];
                     data.steps = requiredSteps;
                 }

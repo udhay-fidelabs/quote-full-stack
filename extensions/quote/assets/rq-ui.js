@@ -138,6 +138,18 @@
             const container = document.getElementById(`rq-dynamic-form-${blockId}`);
             if (!container || !formConfig || !formConfig.steps) return;
 
+            // Update main header title and description if present
+            const formTitle = document.getElementById(`rq-form-title-${blockId}`);
+            const formDesc = document.getElementById(`rq-form-desc-${blockId}`);
+            if (formTitle && formConfig.title) formTitle.innerText = formConfig.title;
+            if (formDesc && formConfig.description) formDesc.innerText = formConfig.description;
+
+            // Update success screen title and message if present
+            const successTitle = document.getElementById(`rq-success-title-${blockId}`);
+            const successDesc = document.getElementById(`rq-success-desc-${blockId}`);
+            if (successTitle && formConfig.settings?.successTitle) successTitle.innerText = formConfig.settings.successTitle;
+            if (successDesc && formConfig.settings?.successMessage) successDesc.innerText = formConfig.settings.successMessage;
+
             const reviewStep = formConfig.steps.find(s => s.id === 'step-review');
             const otherSteps = formConfig.steps.filter(s => s.id !== 'step-review');
             if (reviewStep) {
@@ -162,12 +174,22 @@
 
                 html += `<div id="rq-step-${stepNum}-${blockId}" class="rq-step ${isActive}">`;
                 html += `<div class="rq-step-content">`;
+                if (step.title) {
+                    html += `<h3 class="rq-step-title">${step.title}</h3>`;
+                }
+                if (step.description) {
+                    html += `<p class="rq-step-description">${step.description}</p>`;
+                }
 
                 if (step.id !== "step-review") {
                     step.fields.forEach(field => {
                         const layoutClass = field.layoutWidth === 'half' ? ' rq-col-half' : '';
                         html += `<div class="rq-input-group${layoutClass}" data-field-id="${field.id}">`;
                         html += `<label>${field.label} ${field.required ? '<span class="rq-required">*</span>' : ''}</label>`;
+                        
+                        if (field.helpText) {
+                            html += `<div class="rq-field-help-text" style="font-size: 12px; color: #6d7175; margin-bottom: 8px; font-style: italic;">${field.helpText}</div>`;
+                        }
 
                         const fieldName = field.id.replace('field-', '');
                         const fieldId = `rq-${fieldName}-${blockId}`;
@@ -213,11 +235,13 @@
                             html += `<div class="rq-input-currency"><span class="rq-currency-symbol">$</span><input type="number" name="${fieldName}" id="${fieldId}" step="0.01" min="0" placeholder="0.00" ${attrs}></div>`;
                         } else {
                             if (fieldName === 'pincode' || field.validationRegex === '^[0-9]+$') {
-                                html += `<input type="text" name="${fieldName}" id="${fieldId}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" ${attrs}>`;
+                                const maxLength = fieldName === 'pincode' ? 'maxlength="6"' : attrs.includes('maxlength') ? '' : '';
+                                html += `<input type="text" name="${fieldName}" id="${fieldId}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);" ${attrs} ${maxLength}>`;
                             } else {
                                 html += `<input type="text" name="${fieldName}" id="${fieldId}" ${attrs}>`;
                             }
                         }
+                        
 
                         html += `<span class="rq-error" id="rq-error-${fieldName}-${blockId}"></span>`;
                         html += `</div>`;

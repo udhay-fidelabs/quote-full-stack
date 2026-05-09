@@ -26,7 +26,7 @@ export class DraftOrderMapper {
                     title: quote.productTitle || APP_DEFAULTS.QUOTE_ITEM_TITLE,
                 },
             ],
-            email: quote.email || quote.customerEmail,
+            email: quote.customerEmail,
             phone: this.formatPhone(quote.phone),
             note: this.buildNote(quote),
             customAttributes: [

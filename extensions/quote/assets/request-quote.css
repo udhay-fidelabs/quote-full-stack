@@ -1489,3 +1489,22 @@
 .rq-input-currency input {
     padding-left: 30px !important;
 }
+
+/* Step Header Alignment Fixes */
+.rq-step-title {
+    width: 100% !important;
+    flex-basis: 100%;
+    margin-bottom: 8px !important;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--rq-text);
+}
+
+.rq-step-description {
+    width: 100% !important;
+    flex-basis: 100%;
+    font-size: 14px;
+    color: var(--rq-text-subdued);
+    margin-bottom: 24px !important;
+    line-height: 1.5;
+}
