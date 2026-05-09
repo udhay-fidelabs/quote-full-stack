@@ -388,6 +388,10 @@
                     
                     html += `<div class="rq-input-group" style="${gridSpan} margin-bottom: 0;">`;
                     html += `<label style="display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 4px;">${field.label} ${field.required ? '<span class="rq-required" style="color: #ef4444;">*</span>' : ''}</label>`;
+                    
+                    if (field.description) {
+                        html += `<p style="font-size: 11px; color: #6b7280; margin: -2px 0 6px 0; font-weight: 500; line-height: 1.4;">${field.description}</p>`;
+                    }
 
                     const fieldName = field.id.replace('field-', '');
                     const fieldId = `rq-${fieldName}-${blockId}`;
