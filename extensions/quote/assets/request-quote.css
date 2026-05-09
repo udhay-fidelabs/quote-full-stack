@@ -148,9 +148,6 @@
     filter: brightness(1.1);
 }
 
-.rq-btn:active,
-.rq-btn-injected:active {
-}
 
 /* Modal Styling - Premium & Modern */
 .rq-modal {
@@ -185,14 +182,16 @@
 }
 
 .rq-modal-content {
-    background: #fff;
-    width: 95%;
-    max-width: 1100px; /* Increased for split layout */
-    max-height: 90vh;
-    overflow: hidden; /* Changed to hidden, internal columns will scroll */
-    border-radius: var(--rq-radius);
+    background: transparent; /* Changed to transparent to show separation */
+    width: 98%;
+    max-width: 1500px;
+    /* Even larger for expansive layout */
+    max-height: 95vh;
+    overflow: hidden;
+    /* Changed to hidden, internal columns will scroll */
+    border-radius: 0;
     position: relative;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: none;
     transform: none;
     transition: none;
     z-index: 1;
@@ -228,26 +227,33 @@
 
 .rq-form-container {
     display: flex;
-    flex-direction: row; /* Split layout */
+    flex-direction: row;
+    /* Split layout */
     width: 100%;
     height: 100%;
     overflow: hidden;
     padding: 0;
+    gap: 24px; /* Added gap for separation */
 }
 
 .rq-column-left {
-    width: 40%;
-    background: #f8f9fa;
-    border-right: 1px solid var(--rq-border);
+    width: 33%;
+    background: #fff; /* Changed to white */
+    border-radius: 16px; /* Card style */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: none;
     display: flex;
     flex-direction: column;
-    padding: 24px 20px;
+    padding: 32px 24px;
     overflow-y: auto;
 }
 
 .rq-column-right {
-    width: 60%;
-    padding: 24px 24px 20px;
+    width: 67%;
+    background: #fff; /* Card style */
+    border-radius: 16px; /* Card style */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 32px 40px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -300,8 +306,6 @@
     position: relative;
 }
 
-.rq-progress-circle span {
-}
 
 .rq-progress-check {
     position: absolute;
@@ -757,7 +761,8 @@
 
 /* Single-page Form Styles */
 .rq-single-page-form .rq-step {
-    display: block !important; /* Force all steps to show */
+    display: block !important;
+    /* Force all steps to show */
     animation: none;
     margin-bottom: 32px;
     border-bottom: 1px solid var(--rq-border);
@@ -893,7 +898,7 @@
     gap: 0;
 }
 
-.rq-review-container > * {
+.rq-review-container>* {
     width: 100% !important;
     max-width: 650px !important;
 }
@@ -1023,7 +1028,7 @@
     overflow: hidden;
     border: 2px solid #f3f4f6;
     background: #ffffff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
@@ -1428,6 +1433,7 @@
         right: -100%;
     }
 }
+
 /* Enhanced Review Styles */
 .rq-review-items-card {
     background: #fff;
