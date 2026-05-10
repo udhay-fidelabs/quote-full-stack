@@ -338,8 +338,13 @@
 
             const formTitle = document.getElementById(`rq-form-title-${blockId}`);
             const formDesc = document.getElementById(`rq-form-desc-${blockId}`);
-            if (formTitle && formConfig.title) formTitle.innerText = formConfig.title;
-            if (formDesc && formConfig.description) formDesc.innerText = formConfig.description;
+            if (formTitle) formTitle.innerText = formConfig.title || 'Request Your Quote';
+            if (formDesc) formDesc.innerHTML = formConfig.description || "Fill in your details and we'll get back to you shortly";
+
+            const successTitle = document.getElementById(`rq-success-title-${blockId}`);
+            const successDesc = document.getElementById(`rq-success-desc-${blockId}`);
+            if (successTitle) successTitle.innerText = formConfig.settings?.successTitle || 'Quote Requested Successfully!';
+            if (successDesc) successDesc.innerHTML = formConfig.settings?.successMessage || 'Thank you for your request. Our team will review your quote and get back to you shortly.';
 
             const submitIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`;
             const fileIcon = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`;
@@ -349,12 +354,16 @@
             formConfig.steps.forEach((step, index) => {
                 if (step.id === 'step-review') return;
 
-                html += `<div class="rq-step active" style="margin-bottom: 24px;">`;
+                html += `<div class="rq-step active" style="margin-bottom: 32px;">`;
                 if (step.title) {
-                    html += `<h3 class="rq-step-title" style="font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 12px;">
+                    html += `<h3 class="rq-step-title" style="font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 12px;">
                         <span style="background: #111827; color: white; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px;">${index + 1}</span>
                         ${step.title}
                     </h3>`;
+                }
+
+                if (step.description) {
+                    html += `<p class="rq-step-description" style="font-size: 14px; color: #6b7280; margin: -4px 0 24px 0; line-height: 1.6; font-weight: 500;">${step.description}</p>`;
                 }
 
                 html += `<div class="rq-step-content">`;
@@ -362,11 +371,12 @@
                     const isFull = field.layoutWidth === 'full' || field.type === 'textarea' || field.type === 'file';
                     const gridSpan = isFull ? 'grid-column: span 2;' : '';
 
-                    html += `<div class="rq-input-group" style="${gridSpan} margin-bottom: 0;">`;
-                    html += `<label style="display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 4px;">${field.label} ${field.required ? '<span class="rq-required" style="color: #ef4444;">*</span>' : ''}</label>`;
+                    html += `<div class="rq-input-group" style="${gridSpan} margin-bottom: 4px;">`;
+                    html += `<label style="display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px;">${field.label} ${field.required ? '<span class="rq-required" style="color: #ef4444;">*</span>' : ''}</label>`;
 
-                    if (field.description) {
-                        html += `<p style="font-size: 11px; color: #6b7280; margin: -2px 0 6px 0; font-weight: 500; line-height: 1.4;">${field.description}</p>`;
+                    const fieldDescription = field.helpText || field.description;
+                    if (fieldDescription) {
+                        html += `<p class="rq-field-description" style="font-size: 12px; color: #6b7280; margin: -4px 0 10px 0; font-weight: 500; line-height: 1.5;">${fieldDescription}</p>`;
                     }
 
                     const fieldName = field.id.replace('field-', '');
@@ -379,7 +389,7 @@
                     if (field.maxLength) attrs += ` maxlength="${field.maxLength}"`;
 
                     if (field.type === 'textarea') {
-                        html += `<textarea name="${fieldName}" id="${fieldId}" rows="4" placeholder="${field.placeholder || 'Enter your message here...'}" class="rq-form-input" ${attrs}></textarea>`;
+                        html += `<textarea name="${fieldName}" id="${fieldId}" rows="4" placeholder="${field.placeholder || field.label || 'Enter details...'}" class="rq-form-input" ${attrs}></textarea>`;
                     } else if (field.type === 'file') {
                         const isMultiple = field.allowMultiple || field.id.includes('multiple');
                         const maxFiles = isMultiple ? 3 : 1;
