@@ -120,7 +120,7 @@ export const FormStep: React.FC<FormStepProps> = ({
                                     helpText="Optional: Add a short description for this step."
                                     autoComplete="off"
                                     multiline={2}
-                                    disabled={step.isSystem || readOnly}
+                                    disabled={readOnly}
                                 />
                             </BlockStack>
                         </Box>
