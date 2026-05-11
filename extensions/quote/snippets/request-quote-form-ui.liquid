@@ -55,9 +55,10 @@
         </div>
       </div>
 
+      {%- assign config = shop.metafields.merchant_quote.config.value -%}
       <div class="rq-form-header">
-        <h2>Submit Your Quote Request</h2>
-        <p>Fill in your details and we'll get back to you shortly</p>
+        <h2 id="rq-form-title-{{ block_id }}">{{ config.title | default: 'Submit Your Quote Request' }}</h2>
+        <p id="rq-form-desc-{{ block_id }}">{{ config.description | default: "Fill in your details and we'll get back to you shortly" }}</p>
       </div>
 
       <form id="rq-form-{{ block_id }}" onsubmit="event.preventDefault();" class="rq-form">
@@ -136,8 +137,8 @@
               <path d="M9 12l2 2 4-4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <h2>Quote Requested Successfully!</h2>
-          <p>Thank you for your request. Our team will review your quote and get back to you shortly.</p>
+          <h2 id="rq-success-title-{{ block_id }}">{{ config.successTitle | default: 'Quote Requested Successfully!' }}</h2>
+          <p id="rq-success-desc-{{ block_id }}">{{ config.successMessage | default: 'Thank you for your request. Our team will review your quote and get back to you shortly.' }}</p>
           <button type="button" onclick="rqResetAndClose('{{ block_id }}')" class="rq-submit-btn">
             Continue Shopping
           </button>
