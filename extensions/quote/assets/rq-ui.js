@@ -274,6 +274,7 @@
 
             const borderStyle = '1px solid #f3f4f6';
             const settings = window.rqGlobalSettings || {};
+            let itemsHtml = '';
             cart.forEach(item => {
                 const itemPriceTotal = window.RqCart ? window.RqCart.formatPrice(item.price * (parseInt(item.quantity) || 1)) : '';
                 
