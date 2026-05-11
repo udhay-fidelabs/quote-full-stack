@@ -214,7 +214,9 @@
                         price: product.variants[0].price,
                         featured_image: product.featured_image,
                         quantity: 1,
-                        handle: handle
+                        handle: handle,
+                        sku: product.variants[0].sku || "",
+                        vendor: product.vendor || ""
                     };
 
                     // If it was a single product request, we need to convert to bulk mode
@@ -271,54 +273,75 @@
             const totalText = window.RqCart ? window.RqCart.formatPrice(cart.reduce((acc, i) => acc + (i.price * (parseInt(i.quantity) || 1)), 0)) : '';
 
             const borderStyle = '1px solid #f3f4f6';
-            let itemsHtml = '';
+            const settings = window.rqGlobalSettings || {};
             cart.forEach(item => {
                 const itemPriceTotal = window.RqCart ? window.RqCart.formatPrice(item.price * (parseInt(item.quantity) || 1)) : '';
+                
+                let metadataHtml = '';
+                if (settings.showSku && item.sku) {
+                    metadataHtml += `<div class="rq-product-metadata-item">SKU: ${item.sku}</div>`;
+                }
+                if (settings.showVendor && item.vendor) {
+                    metadataHtml += `<div class="rq-product-metadata-item">Vendor: ${item.vendor}</div>`;
+                }
+
+                const qtyControlsHtml = (settings.showQuantity !== false) ? `
+                    <div class="rq-qty-controls">
+                        <button onclick="window.RqCart.updateQuantity('${item.variantId}', -1, '${blockId}')" class="rq-qty-btn">−</button>
+                        <input type="number" value="${item.quantity}" min="1" 
+                               onchange="window.RqCart.updateQuantity('${item.variantId}', 0, '${blockId}', this.value)"
+                               class="rq-qty-input">
+                        <button onclick="window.RqCart.updateQuantity('${item.variantId}', 1, '${blockId}')" class="rq-qty-btn">+</button>
+                    </div>
+                ` : `<div class="rq-qty-static">Qty: ${item.quantity}</div>`;
+
+                const noteFieldHtml = settings.showProductNote ? `
+                    <div class="rq-product-note-wrapper">
+                        <textarea 
+                            placeholder="Add a note for this item..." 
+                            onchange="window.RqCart.updateItemNote('${item.variantId}', this.value)"
+                            class="rq-product-note-input"
+                        >${item.note || ''}</textarea>
+                    </div>
+                ` : '';
+
                 itemsHtml += `
-                    <div class="rq-product-summary" style="margin-bottom: 12px; padding: 12px; border: 1px solid #f3f4f6; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; gap: 12px; align-items: stretch; position: relative;">
-                        <img src="${item.featured_image || ''}" alt="${item.title}" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #f3f4f6; flex-shrink: 0;">
-                        
-                        <div style="flex: 1; display: flex; flex-direction: column; min-height: 64px; min-width: 0;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
-                                <div class="rq-product-title" style="font-size: 15px; font-weight: 700; color: #111827; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; flex: 1; padding-right: 12px;">${item.title}</div>
-                                <button class="rq-cart-item-remove" onclick="window.RqCart.removeItem('${item.variantId}', '${blockId}')" 
-                                        style="background: #fef2f2; border: none; cursor: pointer; color: #ef4444; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center;"
-                                        onmouseover="this.style.background='#fee2e2';"
-                                        onmouseout="this.style.background='#fef2f2';">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-                                </button>
-                            </div>
-                            <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: auto;">${item.variantTitle && item.variantTitle !== 'Default Title' ? item.variantTitle : 'Standard'}</div>
+                    <div class="rq-product-summary">
+                        <div class="rq-product-summary-main">
+                            <img src="${item.featured_image || ''}" alt="${item.title}" class="rq-product-img">
                             
-                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px;">
-                                <div class="rq-qty-controls" style="display: flex; align-items: center; background: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb; height: 32px; padding: 2px;">
-                                    <button onclick="window.RqCart.updateQuantity('${item.variantId}', -1, '${blockId}')" 
-                                            style="width: 28px; height: 100%; border: none; background: #fff; border-radius: 8px; cursor: pointer; color: #6b7280; display: flex; align-items: center; justify-content: center; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
-                                            onmouseover="this.style.color='#111827'" onmouseout="this.style.color='#6b7280'">-</button>
-                                    <input type="number" value="${item.quantity}" min="1" 
-                                           onchange="window.RqCart.updateQuantity('${item.variantId}', 0, '${blockId}', this.value)"
-                                           style="width: 40px; text-align: center; border: none; background: transparent; font-size: 13px; font-weight: 700; color: #111827; -moz-appearance: textfield;">
-                                    <button onclick="window.RqCart.updateQuantity('${item.variantId}', 1, '${blockId}')" 
-                                            style="width: 28px; height: 100%; border: none; background: #fff; border-radius: 8px; cursor: pointer; color: #6b7280; display: flex; align-items: center; justify-content: center; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
-                                            onmouseover="this.style.color='#111827'" onmouseout="this.style.color='#6b7280'">+</button>
+                            <div class="rq-product-info">
+                                <div class="rq-product-header">
+                                    <div class="rq-product-title">${item.title}</div>
+                                    <button class="rq-cart-item-remove" onclick="window.RqCart.removeItem('${item.variantId}', '${blockId}')">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                                    </button>
                                 </div>
-                                ${hidePrice ? '' : `<div style="font-weight: 800; color: #111827; font-size: 16px; letter-spacing: -0.2px;">${itemPriceTotal}</div>`}
+                                <div class="rq-product-variant">${item.variantTitle && item.variantTitle !== 'Default Title' ? item.variantTitle : 'Standard'}</div>
+                                ${metadataHtml}
                             </div>
                         </div>
+
+                        <div class="rq-product-summary-footer">
+                            ${qtyControlsHtml}
+                            ${hidePrice ? '' : `<div class="rq-product-total-price">${itemPriceTotal}</div>`}
+                        </div>
+
+                        ${noteFieldHtml}
                     </div>
                 `;
             });
 
             listContainer.innerHTML = `
                 <div class="rq-bulk-summary-wrapper">
-                    <div style="max-height: 400px; overflow-y: auto; padding-right: 4px;">
+                    <div style="padding-right: 4px;">
                         ${itemsHtml}
                     </div>
                     
                     ${hidePrice ? '' : `
                     <div style="margin-top: 16px; padding: 16px; background: #f9fafb; border-radius: 16px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span style="font-size: 14px; color: #6b7280; font-weight: 600;">Estimate Subtotal (${count} items)</span>
+                            <span style="font-size: 14px; color: #6b7280; font-weight: 600;">Estimate Subtotal</span>
                             <span style="font-size: 24px; font-weight: 800; color: #111827; letter-spacing: -0.5px;">${totalText}</span>
                         </div>
                         <div style="height: 1px; background: #e5e7eb; margin: 8px 0;"></div>

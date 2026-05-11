@@ -98,7 +98,9 @@
                     price: product.variants[0].price,
                     featured_image: product.featured_image,
                     quantity: qty,
-                    handle: handle
+                    handle: handle,
+                    sku: product.variants[0].sku || "",
+                    vendor: product.vendor || ""
                 };
 
                 window.RqCart.addItem(item);

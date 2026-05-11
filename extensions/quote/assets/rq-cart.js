@@ -20,6 +20,7 @@
 
             if (existingIndex > -1) {
                 cart[existingIndex].quantity = (parseInt(cart[existingIndex].quantity) || 0) + (parseInt(item.quantity) || 1);
+                // Keep the latest note if it was updated during the "Add more" process, though usually it's empty here
             } else {
                 cart.push({
                     variantId: item.variantId,
@@ -29,7 +30,10 @@
                     price: item.price,
                     featured_image: item.featured_image,
                     quantity: parseInt(item.quantity) || 1,
-                    handle: item.handle
+                    handle: item.handle,
+                    sku: item.sku || "",
+                    vendor: item.vendor || "",
+                    note: ""
                 });
             }
             this.saveCart(cart);
@@ -54,6 +58,15 @@
                     this.saveCart(cart);
                     this.refreshModalUI(blockId);
                 }
+            }
+        },
+
+        updateItemNote: function (variantId, note) {
+            const cart = this.getCart();
+            const item = cart.find(i => String(i.variantId) === String(variantId));
+            if (item) {
+                item.note = note;
+                this.saveCart(cart);
             }
         },
 

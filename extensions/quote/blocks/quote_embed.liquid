@@ -83,7 +83,11 @@
       hidePriceGlobal: {{ config.hidePriceGlobal | default: false | json }},
       loginToSeePrice: {% if config.loginToSeePrice and hide_content_for_guests %}true{% else %}false{% endif %},
       placementLocation: {{ config.placementLocation | default: "above" | json }},
-      visibility: {{ config.visibility | default: "all" | json }}
+      visibility: {{ config.visibility | default: "all" | json }},
+      showSku: {{ config.showSku | default: false | json }},
+      showVendor: {{ config.showVendor | default: false | json }},
+      showQuantity: {{ config.showQuantity | default: true | json }},
+      showProductNote: {{ config.showProductNote | default: false | json }}
     };
   </script>
 
