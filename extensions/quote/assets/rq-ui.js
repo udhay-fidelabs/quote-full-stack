@@ -277,16 +277,20 @@
             let itemsHtml = '';
             cart.forEach(item => {
                 const itemPriceTotal = window.RqCart ? window.RqCart.formatPrice(item.price * (parseInt(item.quantity) || 1)) : '';
-                
+
                 let metadataHtml = '';
-                if (settings.showSku && item.sku) {
-                    metadataHtml += `<div class="rq-product-metadata-item">SKU: ${item.sku}</div>`;
+                const showSku = settings.showSku === true || settings.showSku === 'true';
+                const showVendor = settings.showVendor === true || settings.showVendor === 'true';
+                const showNote = settings.showProductNote === true || settings.showProductNote === 'true';
+
+                if (showSku && item.sku) {
+                    metadataHtml += `<div class="rq-product-metadata-item"><span>SKU:</span> ${item.sku}</div>`;
                 }
-                if (settings.showVendor && item.vendor) {
-                    metadataHtml += `<div class="rq-product-metadata-item">Vendor: ${item.vendor}</div>`;
+                if (showVendor && item.vendor) {
+                    metadataHtml += `<div class="rq-product-metadata-item"><span>Vendor:</span> ${item.vendor}</div>`;
                 }
 
-                const qtyControlsHtml = (settings.showQuantity !== false) ? `
+                const qtyControlsHtml = (settings.showQuantity !== false && settings.showQuantity !== 'false') ? `
                     <div class="rq-qty-controls">
                         <button onclick="window.RqCart.updateQuantity('${item.variantId}', -1, '${blockId}')" class="rq-qty-btn">−</button>
                         <input type="number" value="${item.quantity}" min="1" 
@@ -296,7 +300,7 @@
                     </div>
                 ` : `<div class="rq-qty-static">Qty: ${item.quantity}</div>`;
 
-                const noteFieldHtml = settings.showProductNote ? `
+                const noteFieldHtml = showNote ? `
                     <div class="rq-product-note-wrapper">
                         <textarea 
                             placeholder="Add a note for this item..." 
@@ -308,26 +312,27 @@
 
                 itemsHtml += `
                     <div class="rq-product-summary">
-                        <div class="rq-product-summary-main">
-                            <img src="${item.featured_image || ''}" alt="${item.title}" class="rq-product-img">
+                        <div class="rq-product-row">
+                            <div class="rq-product-img-col">
+                                <img src="${item.featured_image || ''}" alt="${item.title}" class="rq-product-img">
+                            </div>
                             
-                            <div class="rq-product-info">
-                                <div class="rq-product-header">
-                                    <div class="rq-product-title">${item.title}</div>
-                                    <button class="rq-cart-item-remove" onclick="window.RqCart.removeItem('${item.variantId}', '${blockId}')">
+                            <div class="rq-product-info-col">
+                                <div class="rq-product-title-line">
+                                    <span class="rq-product-title">${item.title}</span>
+                                    <button class="rq-cart-item-remove-small" onclick="window.RqCart.removeItem('${item.variantId}', '${blockId}')" title="Remove">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
                                     </button>
                                 </div>
-                                <div class="rq-product-variant">${item.variantTitle && item.variantTitle !== 'Default Title' ? item.variantTitle : 'Standard'}</div>
+                                <div class="rq-product-variant-line">${item.variantTitle && item.variantTitle !== 'Default Title' ? item.variantTitle : 'Standard'}</div>
                                 ${metadataHtml}
+                                
+                                <div class="rq-product-actions-line">
+                                    ${qtyControlsHtml}
+                                    ${hidePrice ? '' : `<div class="rq-product-price-small">${itemPriceTotal}</div>`}
+                                </div>
                             </div>
                         </div>
-
-                        <div class="rq-product-summary-footer">
-                            ${qtyControlsHtml}
-                            ${hidePrice ? '' : `<div class="rq-product-total-price">${itemPriceTotal}</div>`}
-                        </div>
-
                         ${noteFieldHtml}
                     </div>
                 `;
