@@ -90,16 +90,38 @@
                 const qtyInput = document.getElementById('rqPageQtyInput-' + blockId) || document.getElementById('rqPageQtyInput');
                 const qty = parseInt(qtyInput?.value) || 1;
 
+                // Try to find selected variant from URL or form
+                let selectedVariant = product.variants[0];
+                const urlParams = new URLSearchParams(window.location.search);
+                const variantIdFromUrl = urlParams.get('variant');
+                
+                // Common Shopify variant selector names
+                const variantSelectors = ['input[name="id"]', 'select[name="id"]', '.variant-input input:checked'];
+                let variantIdFromForm = null;
+                for (const sel of variantSelectors) {
+                    const el = document.querySelector(sel);
+                    if (el && el.value) {
+                        variantIdFromForm = el.value;
+                        break;
+                    }
+                }
+
+                const targetId = variantIdFromUrl || variantIdFromForm;
+                if (targetId) {
+                    const found = product.variants.find(v => String(v.id) === String(targetId));
+                    if (found) selectedVariant = found;
+                }
+
                 const item = {
                     productId: product.id,
-                    variantId: product.variants[0].id,
+                    variantId: selectedVariant.id,
                     title: product.title,
-                    variantTitle: product.variants[0].title,
-                    price: product.variants[0].price,
-                    featured_image: product.featured_image,
+                    variantTitle: selectedVariant.title,
+                    price: selectedVariant.price,
+                    featured_image: selectedVariant.featured_image || product.featured_image,
                     quantity: qty,
                     handle: handle,
-                    sku: product.variants[0].sku || "",
+                    sku: selectedVariant.sku || "",
                     vendor: product.vendor || ""
                 };
 
@@ -358,8 +380,8 @@
         }
     };
 
-    window.rqUpdatePageQty = function (change) {
-        const input = document.getElementById('rqPageQtyInput');
+    window.rqUpdatePageQty = function (change, blockId) {
+        const input = document.getElementById('rqPageQtyInput-' + blockId) || document.getElementById('rqPageQtyInput');
         if (!input) return;
         let newVal = (parseInt(input.value) || 1) + change;
         if (newVal < 1) newVal = 1;
