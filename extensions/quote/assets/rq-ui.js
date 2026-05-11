@@ -55,10 +55,12 @@
                         <div class="rq-product-info" style="flex: 1; min-width: 0; padding-top: 2px;">
                             <div class="rq-product-title" style="font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; padding-right: 24px; line-height: 1.4;">${product.title}</div>
                             <div class="rq-product-variant" style="display: inline-block; padding: 2px 8px; background: #f3f4f6; border-radius: 4px; font-size: 11px; font-weight: 600; color: #4b5563; text-transform: uppercase; letter-spacing: 0.5px;">${vTitle !== 'Default Title' ? vTitle : 'Standard'}</div>
+                            ${(window.rqGlobalSettings && (window.rqGlobalSettings.hidePriceGlobal || window.rqGlobalSettings.loginToSeePrice)) ? '' : `
                             <div class="rq-product-price" style="font-size: 16px; font-weight: 800; margin-top: 8px; color: #111827; display: flex; align-items: baseline; gap: 4px;">
                                 ${priceText}
                                 <span style="font-size: 11px; color: #9ca3af; font-weight: 400;">/ item</span>
                             </div>
+                            `}
                         </div>
                     </div>
                     
@@ -80,11 +82,6 @@
                     </div>
                 </div>
 
-                <button class="rq-add-more-btn" onclick="window.RqUi.rqOpenProductSelector('${blockId}')" 
-                        style="width: 100%; padding: 14px; border: 2px dashed #111827; border-radius: 12px; background: #f9fafb; color: #111827; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    Add More Products
-                </button>
             `;
         },
 
@@ -270,6 +267,7 @@
             if (!listContainer) return;
 
             const count = cart.reduce((acc, i) => acc + (parseInt(i.quantity) || 0), 0);
+            const hidePrice = window.rqGlobalSettings && (window.rqGlobalSettings.hidePriceGlobal || window.rqGlobalSettings.loginToSeePrice);
             const totalText = window.RqCart ? window.RqCart.formatPrice(cart.reduce((acc, i) => acc + (i.price * (parseInt(i.quantity) || 1)), 0)) : '';
 
             const borderStyle = '1px solid #f3f4f6';
@@ -304,7 +302,7 @@
                                             style="width: 28px; height: 100%; border: none; background: #fff; border-radius: 8px; cursor: pointer; color: #6b7280; display: flex; align-items: center; justify-content: center; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
                                             onmouseover="this.style.color='#111827'" onmouseout="this.style.color='#6b7280'">+</button>
                                 </div>
-                                <div style="font-weight: 800; color: #111827; font-size: 16px; letter-spacing: -0.2px;">${itemPriceTotal}</div>
+                                ${hidePrice ? '' : `<div style="font-weight: 800; color: #111827; font-size: 16px; letter-spacing: -0.2px;">${itemPriceTotal}</div>`}
                             </div>
                         </div>
                     </div>
@@ -317,6 +315,7 @@
                         ${itemsHtml}
                     </div>
                     
+                    ${hidePrice ? '' : `
                     <div style="margin-top: 16px; padding: 16px; background: #f9fafb; border-radius: 16px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                             <span style="font-size: 14px; color: #6b7280; font-weight: 600;">Estimate Subtotal (${count} items)</span>
@@ -328,6 +327,7 @@
                             Final quote includes applicable taxes and shipping.
                         </p>
                     </div>
+                    `}
                 </div>
             `;
         },

@@ -164,6 +164,7 @@
             const cart = window.RqCart.getCart();
             let itemsHtml = '<div class="rq-review-items-card">';
             let total = 0;
+            const hidePrice = window.rqGlobalSettings && (window.rqGlobalSettings.hidePriceGlobal || window.rqGlobalSettings.loginToSeePrice);
             cart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
@@ -175,17 +176,19 @@
                             <div style="font-size: 13px; color: #6d7175;">${item.variantTitle !== 'Default Title' ? item.variantTitle : ''}</div>
                         </div>
                         <div style="text-align: right; flex-shrink: 0;">
-                            <div style="font-size: 14px; font-weight: 700; color: #1a1a1b;">× ${item.quantity}</div>
-                            <div style="font-size: 14px; color: #6366f1; font-weight: 700;">${window.RqCart.formatPrice(item.price)}</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #111827;">× ${item.quantity}</div>
+                            ${hidePrice ? '' : `<div style="font-size: 14px; color: #6366f1; font-weight: 700;">${window.RqCart.formatPrice(item.price)}</div>`}
                         </div>
                     </div>
                 `;
             });
             itemsHtml += `
+                ${hidePrice ? '' : `
                 <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-weight: 800; font-size: 16px; color: #1a1a1b;">Total Estimate</span>
                     <span style="font-weight: 800; font-size: 20px; color: #6366f1;">${window.RqCart.formatPrice(total)}</span>
                 </div>
+                `}
             `;
             itemsHtml += '</div>';
             setHtml('rq-review-items-', itemsHtml);
@@ -209,13 +212,15 @@
                             </div>
                             <div style="text-align: right; flex-shrink: 0;">
                                 <div style="font-size: 15px; font-weight: 700; color: #1a1a1b;">× ${qty}</div>
-                                <div style="font-size: 15px; color: #6366f1; font-weight: 700;">${window.RqCart.formatPrice(price * 100)}</div>
+                                ${hidePrice ? '' : `<div style="font-size: 15px; color: #6366f1; font-weight: 700;">${window.RqCart.formatPrice(price * 100)}</div>`}
                             </div>
                         </div>
+                        ${hidePrice ? '' : `
                         <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-weight: 800; font-size: 16px; color: #1a1a1b;">Total Estimate</span>
                             <span style="font-weight: 800; font-size: 20px; color: #6366f1;">${window.RqCart.formatPrice(total * 100)}</span>
                         </div>
+                        `}
                     </div>
                 `;
                 setHtml('rq-review-items-', itemsHtml);

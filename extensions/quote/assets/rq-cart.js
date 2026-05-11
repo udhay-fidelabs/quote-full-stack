@@ -117,7 +117,9 @@
                             </button>
                         </div>
                         <div class="rq-cart-item-variant">${item.variantTitle && item.variantTitle !== 'Default Title' ? item.variantTitle : ''}</div>
+                        ${(window.rqGlobalSettings && (window.rqGlobalSettings.hidePriceGlobal || window.rqGlobalSettings.loginToSeePrice)) ? '' : `
                         <div class="rq-cart-item-price">${this.formatPrice(item.price)}</div>
+                        `}
                         <div class="rq-cart-item-qty">
                             <button class="rq-cart-item-qty-btn" onclick="window.RqCart.updateQuantity('${item.variantId}', -1)">−</button>
                             <span class="rq-cart-item-qty-value">${item.quantity}</span>
