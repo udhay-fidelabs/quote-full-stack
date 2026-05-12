@@ -52,7 +52,7 @@ export class DraftOrderMapper {
 
     private buildNote(quote: QuoteDocument): string {
         const message =
-            quote.customerMessage || quote.message || `Quote request from ${quote.firstName} ${quote.lastName}`;
+            quote.customerMessage || `Quote request from ${quote.firstName} ${quote.lastName}`;
         return this.sanitize(message);
     }
 
