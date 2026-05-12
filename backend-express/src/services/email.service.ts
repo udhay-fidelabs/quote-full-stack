@@ -15,9 +15,7 @@ export class EmailService implements IEmailService {
         @inject(TYPES.IMerchantService) private merchantService: IMerchantService,
         @inject(TYPES.IPlanService) private planService: IPlanService,
     ) {
-        logger.debug(
-            `[EmailService] Initializing. SMTP_USER: ${env.SMTP_USER ? "Set" : "Missing"}, SMTP_PASS: ${env.SMTP_PASS ? "Set" : "Missing"}`,
-        );
+        logger.debug("[EmailService] Initializing transporter...");
 
         if (env.SMTP_USER && env.SMTP_PASS) {
             this.transporter = nodemailer.createTransport({
