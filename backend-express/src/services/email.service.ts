@@ -46,10 +46,9 @@ export class EmailService implements IEmailService {
         const sessions = await sessionStorage.findSessionsByShop(shop);
         if (!sessions || sessions.length === 0 || !sessions[0]) {
             logger.warn(`[EmailService] No active sessions found for shop: ${shop}. Falling back to default SMTP.`);
-            // If no session, we can't get merchant settings easily, but let's try to proceed with fallback transporter
-            const transporter = await this.getTransporter(SETTINGS_DEFAULTS.DEFAULTS as any);
+            const transporter = await this.getTransporter(SETTINGS_DEFAULTS.DEFAULTS as unknown as IEmailConfigData);
             if (transporter) {
-                await this.sendToMerchant(merchant.email as string, quote, transporter, SETTINGS_DEFAULTS.DEFAULTS as any);
+                await this.sendToMerchant(merchant.email as string, quote, transporter, SETTINGS_DEFAULTS.DEFAULTS as unknown as IEmailConfigData);
             }
             return;
         }
@@ -69,17 +68,15 @@ export class EmailService implements IEmailService {
             const plan = await this.planService.getMerchantPlan(shop);
             const isPro = plan?.name === PlanType.PRO;
 
-            // MERCHANT NOTIFICATION
             await this.sendToMerchant(merchant.email as string, quote, transporter, emailConfig);
 
-            // CUSTOMER CONFIRMATION
             await this.sendToCustomer(quote.customerEmail, quote, isPro, transporter, emailConfig);
         } catch (error) {
             logger.error("[EmailService] Failed to send quote notification:", error);
         }
     }
 
-    async testSmtpConnection(publicSettings: any, privateSettings: any): Promise<boolean> {
+    async testSmtpConnection(publicSettings: Partial<IEmailConfigData>, privateSettings: Partial<IEmailConfigData>): Promise<boolean> {
         const config = { ...publicSettings, ...privateSettings } as IEmailConfigData;
         const transporter = await this.getTransporter(config);
         if (!transporter) return false;

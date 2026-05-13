@@ -22,7 +22,7 @@ export class EmailConfigService implements IEmailConfigService {
     async updateConfig(session: Session, config: IEmailConfigData): Promise<void> {
         // Prevent saving the masked password
         if (config.smtpPass === "********") {
-            delete config.smtpPass;
+            config.smtpPass = undefined;
         }
 
         await EmailConfig.findOneAndUpdate(

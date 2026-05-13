@@ -1,6 +1,6 @@
 import { Router, json } from "express";
 import { container } from "@/inversify.config";
-import { EmailConfigController } from "@/controllers/email-config.controller";
+import type { EmailConfigController } from "@/controllers/email-config.controller";
 import { TYPES } from "@/types";
 import { shopify } from "@/config/shopify.config";
 import { planGuard } from "@/middlewares/plan-guard.middleware";
