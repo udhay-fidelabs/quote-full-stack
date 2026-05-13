@@ -5,7 +5,7 @@ import { SMTPSettings } from './SMTPSettings';
 
 interface Props {
   settings: IEmailSettings;
-  onChange: (key: keyof IEmailSettings, value: any) => void;
+  onChange: (key: keyof IEmailSettings, value: unknown) => void;
 }
 
 export const NotificationSettings: React.FC<Props> = ({ settings, onChange }) => {

@@ -120,7 +120,7 @@ export const SMTPSettings: React.FC<SMTPSettingsProps> = ({ settings, onChange }
         setTesting(true);
         setTestResult(null);
         try {
-            const result = await testSmtpConnection(settings as any);
+            const result = await testSmtpConnection(settings);
             if (result.success) {
                 setTestResult({ success: true, message: result.message || "Connection successful" });
             } else {
