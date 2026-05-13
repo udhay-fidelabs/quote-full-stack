@@ -15,5 +15,6 @@ export type { IUsageService } from "./services/IUsageService";
 export type { IDashboardService, IDashboardStats } from "./services/IDashboardService";
 export type { IFormService } from "./services/IFormService";
 export type { IUploadService } from "./services/IUploadService";
+export type { IEmailConfigService, IEmailConfigData } from "./services/IEmailConfigService";
 
 export type { PaginatedResult, PaginationOptions } from "./IPagination";

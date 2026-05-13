@@ -1,10 +1,11 @@
 import React from 'react';
 import { Card, BlockStack, Text, Checkbox, TextField } from '@shopify/polaris';
-import type { ISettings } from '../../types/settings';
+import type { IEmailSettings } from '../../api/email-settings';
+import { SMTPSettings } from './SMTPSettings';
 
 interface Props {
-  settings: ISettings;
-  onChange: (key: keyof ISettings, value: unknown) => void;
+  settings: IEmailSettings;
+  onChange: (key: keyof IEmailSettings, value: any) => void;
 }
 
 export const NotificationSettings: React.FC<Props> = ({ settings, onChange }) => {
@@ -31,7 +32,7 @@ export const NotificationSettings: React.FC<Props> = ({ settings, onChange }) =>
           )}
         </BlockStack>
       </Card>
-      
+
       <Card>
         <BlockStack gap="400">
           <Text as="h2" variant="headingMd">Customer Experience</Text>
@@ -40,17 +41,10 @@ export const NotificationSettings: React.FC<Props> = ({ settings, onChange }) =>
             checked={settings.customerEmailEnabled}
             onChange={(v) => onChange('customerEmailEnabled', v)}
           />
-          {settings.customerEmailEnabled && (
-            <TextField
-              label="Confirmation email template"
-              value={settings.emailTemplate}
-              onChange={(v) => onChange('emailTemplate', v)}
-              multiline={4}
-              autoComplete="off"
-            />
-          )}
         </BlockStack>
       </Card>
+
+      <SMTPSettings settings={settings} onChange={onChange} />
     </BlockStack>
   );
 };

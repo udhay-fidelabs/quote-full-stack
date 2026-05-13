@@ -41,7 +41,11 @@ import type {
     IUploadService,
     IUsageService,
     IWebhookRegistry,
+    IEmailConfigService,
 } from "./interfaces";
+import { EmailConfigService } from "./services/email-config.service";
+import { EmailConfigController } from "./controllers/email-config.controller";
+
 
 const container = new Container();
 
@@ -57,6 +61,7 @@ container.bind<ISettingsService>(TYPES.ISettingsService).to(SettingsService).inS
 container.bind<IDraftOrderService>(TYPES.IDraftOrderService).to(DraftOrderService).inSingletonScope();
 container.bind<IUsageService>(TYPES.IUsageService).to(UsageService).inSingletonScope();
 container.bind<IWebhookRegistry>(TYPES.IWebhookRegistry).to(WebhookRegistry).inSingletonScope();
+container.bind<IEmailConfigService>(TYPES.IEmailConfigService).to(EmailConfigService).inSingletonScope();
 container.bind(TYPES.DraftOrderMapper).to(DraftOrderMapper).inSingletonScope();
 
 container.bind<AuthController>(TYPES.AuthController).to(AuthController).inSingletonScope();
@@ -78,5 +83,6 @@ container.bind<DashboardController>(TYPES.DashboardController).to(DashboardContr
 container.bind<IUploadService>(TYPES.IUploadService).to(CloudinaryUploadService).inSingletonScope();
 
 container.bind<UploadController>(TYPES.UploadController).to(UploadController).inSingletonScope();
+container.bind<EmailConfigController>(TYPES.EmailConfigController).to(EmailConfigController).inSingletonScope();
 
 export { container };

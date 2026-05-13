@@ -5,6 +5,7 @@ import { PricingSettings } from "./PricingSettings";
 import { LegalContent } from "./LegalContent";
 import type { ISettings } from "../../types/settings";
 
+
 interface SettingsTabsProps {
     tabId: string;
     settings: ISettings;

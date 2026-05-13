@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Dashboard } from '../pages/Dashboard';
 import { Settings } from '../pages/Settings';
+import EmailSettings from '../pages/EmailSettings';
 import { Quotes } from '../pages/Quotes';
 import { QuoteDetails } from '../pages/QuoteDetails';
 import { DraftOrders } from '../pages/DraftOrders';
@@ -16,6 +17,7 @@ export const AppRoutes: React.FC = () => {
         <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/email-settings" element={<EmailSettings />} />
             <Route path="/form-builder" element={<FormBuilder />} />
             <Route path="/quotes" element={<Quotes />} />
             <Route path="/quotes/:id" element={<QuoteDetails />} />

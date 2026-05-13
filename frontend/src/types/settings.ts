@@ -2,7 +2,7 @@ export interface ISettings {
     // 1. General Settings
     appEnabled: boolean;
     storeName?: string;
-    
+
     // 2. Quote Button Settings
     buttonText: string;
     buttonColor: string;
@@ -15,24 +15,24 @@ export interface ISettings {
     selectedProducts: string[];
     selectedCollections: string[];
     productTags: string[];
-    
+
     // 3. Pricing / Hide Price Settings
     hidePriceGlobal: boolean;
     loginToSeePrice: boolean;
     hidePriceByTags: string[];
     hidePriceByCollections: string[];
-    
+
     // 4. Quote Behavior Settings
     allowPriceSuggestion: boolean;
     allowMultipleProducts: boolean;
     cartToQuote: boolean;
     redirectAfterSubmit: string;
     autoCreateDraftOrder: boolean;
-    
+
     // 5. Customer Visibility Settings
     visibility: 'all' | 'logged_in' | 'tags' | 'b2b';
     customerTags: string[];
-    
+
     // 6. Display Settings
     showOnProductPage: boolean;
     showOnCollectionPage: boolean;
@@ -40,13 +40,26 @@ export interface ISettings {
     showOnCartPage: boolean;
     formType: 'popup' | 'inline';
     replacePrice: boolean;
-    
+
     // 7. Notification Settings
     adminEmailEnabled: boolean;
     adminEmail: string;
     customerEmailEnabled: boolean;
     emailTemplate: string;
-    
+
+    // SMTP Settings
+    smtpEnabled: boolean;
+    smtpProvider: string;
+    smtpHost: string;
+    smtpPort: number;
+    smtpSecure: boolean;
+    smtpFrom: string;
+    smtpUser: string; // From private metafield, masked if exists
+    smtpPass: string; // From private metafield, masked if exists
+
+    // Form Display Settings
+    title?: string;
+
     // Server-side calculated fields (optional)
     plan?: string;
     isAppEmbedded?: boolean;
@@ -87,4 +100,12 @@ export const DEFAULT_SETTINGS: ISettings = {
     adminEmail: '',
     customerEmailEnabled: true,
     emailTemplate: 'Thank you for your quote request! We will get back to you soon.',
+    smtpEnabled: false,
+    smtpProvider: 'custom',
+    smtpHost: '',
+    smtpPort: 587,
+    smtpSecure: false,
+    smtpFrom: '',
+    smtpUser: '',
+    smtpPass: '',
 };

@@ -8,6 +8,13 @@ export async function getSettings(): Promise<ISettings> {
     return json.data;
 }
 
+export async function getSmtpProviders(): Promise<Array<{ label: string; value: string; host: string; port: number; secure: boolean }>> {
+    const res = await fetch("/api/settings/smtp-providers");
+    if (!res.ok) throw new Error("Failed to load SMTP providers");
+    const json = await res.json();
+    return json.data;
+}
+
 export async function updateSettings(settings: ISettings) {
     console.log("[API] updateSettings payload:", settings);
     const res = await fetch("/api/settings", {
@@ -20,4 +27,21 @@ export async function updateSettings(settings: ISettings) {
 
     if (!res.ok) throw new Error("Failed to update settings");
     return res.json();
+}
+
+export async function testSmtpConnection(settings: Partial<ISettings>): Promise<{ success: boolean; message: string }> {
+    const res = await fetch("/api/settings/test-smtp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+    });
+    const json = await res.json();
+    return json;
+}
+
+export async function checkAppEmbedStatus(): Promise<{ isEmbedded: boolean; themeId: string; deepLinkUrl: string }> {
+    const res = await fetch("/api/settings/embed-status");
+    if (!res.ok) throw new Error("Failed to check embed status");
+    const json = await res.json();
+    return json.data;
 }

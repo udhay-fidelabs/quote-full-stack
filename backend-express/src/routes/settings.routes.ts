@@ -14,5 +14,6 @@ router.use(json());
 
 router.get("/", planGuard(PlanAction.SETTINGS_UPDATE), settingsController.getSettings);
 router.put("/", planGuard(PlanAction.SETTINGS_UPDATE), settingsController.updateSettings);
+router.get("/smtp-providers", planGuard(PlanAction.SETTINGS_UPDATE), settingsController.getSmtpProviders);
 
 export default router;

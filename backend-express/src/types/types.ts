@@ -25,4 +25,6 @@ export const TYPES = {
     DashboardController: Symbol.for("DashboardController"),
     UploadController: Symbol.for("UploadController"),
     IUploadService: Symbol.for("IUploadService"),
+    IEmailConfigService: Symbol.for("IEmailConfigService"),
+    EmailConfigController: Symbol.for("EmailConfigController"),
 };

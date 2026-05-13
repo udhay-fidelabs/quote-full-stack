@@ -112,5 +112,6 @@ export function useSettingsLogic() {
         refetch,
         isSaving: mutation.isPending,
         tabs,
+        hasChanged,
     };
 }
