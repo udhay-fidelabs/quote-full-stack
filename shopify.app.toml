@@ -1,32 +1,35 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-application_url = "https://tarpon-social-simply.ngrok-free.app"
-client_id = "7b5c4a91230b06d573dacb0b7b2abd5a"
+client_id = "b6c35f1f28ca75c5a862b0a79daaaddd"
+name = "merchant-quote"
+application_url = "https://merchant-quote-app.fly.dev"
 embedded = true
-name = "request-quote-form"
 
 [build]
 automatically_update_urls_on_dev = false
-dev_store_url = "shopnest-10051.myshopify.com"
+dev_store_url = "fidetechnologies-2.myshopify.com"
 
 [webhooks]
 api_version = "2026-01"
 
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled"]
+uri = "/api/webhooks"
+compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
+
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_app_proxy,read_customers,write_draft_orders,write_products,read_themes,write_content,read_content"
 optional_scopes = []
-scopes = "write_products,write_app_proxy,write_draft_orders,read_customers"
 use_legacy_install_flow = false
 
 [auth]
-redirect_urls = [
-  "https://tarpon-social-simply.ngrok-free.app/api/auth/callback",
-]
+redirect_urls = ["https://merchant-quote-app.fly.dev/api/auth/callback"]
 
 [app_proxy]
-prefix = "apps"
+url = "https://merchant-quote-app.fly.dev/api"
 subpath = "request-quote"
-url = "https://tarpon-social-simply.ngrok-free.app/api"
+prefix = "apps"
 
 [pos]
 embedded = true

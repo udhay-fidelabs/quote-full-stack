@@ -1,0 +1,7 @@
+import type { FormDocument, IForm } from "@/types/form.types";
+
+export interface IFormRepository {
+    findByShop(shop: string): Promise<FormDocument | null>;
+    createOrUpdate(shop: string, formData: Partial<IForm>): Promise<FormDocument>;
+    deleteByShop(shop: string): Promise<unknown>;
+}

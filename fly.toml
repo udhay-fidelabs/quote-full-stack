@@ -1,0 +1,23 @@
+# fly.toml app configuration file generated for your Shopify App
+# Guide: https://fly.io/docs/reference/configuration/
+
+app = "merchant-quote-app"
+primary_region = "bom"
+
+[http_service]
+internal_port = 3001
+force_https = true
+auto_stop_machines = "stop"
+min_machines_running = 1
+processes = ["app"]
+
+[env]
+NODE_ENV = "production"
+PORT = "3001"
+HOST_SCHEMA = "https"
+HOST_NAME = "merchant-quote-app.fly.dev"
+
+[[vm]]
+memory = "2gb"
+cpu_kind = "shared"
+cpus = 2

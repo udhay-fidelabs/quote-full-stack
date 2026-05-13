@@ -1,12 +1,16 @@
 import React from 'react';
-import { AppLayout } from './components/AppLayout';
+import { AppLayoutWrapper } from './components/AppLayoutWrapper';
 import { AppRoutes } from './routes/AppRoutes';
+
+import { ErrorBoundary } from './components/guards/ErrorBoundary';
 
 const App: React.FC = () => {
   return (
-    <AppLayout>
-      <AppRoutes />
-    </AppLayout>
+    <ErrorBoundary>
+      <AppLayoutWrapper>
+        <AppRoutes />
+      </AppLayoutWrapper>
+    </ErrorBoundary>
   );
 };
 

@@ -1,0 +1,29 @@
+import type { PlanType } from "@/constants";
+import type { IPlanRepository } from "@/interfaces";
+import { Plan } from "@/models/plan.model";
+import type { IPlan, PlanDocument } from "@/types";
+import { injectable } from "inversify";
+import type { QueryFilter } from "mongoose";
+
+@injectable()
+export class PlanRepository implements IPlanRepository {
+    async findByName(name: string): Promise<PlanDocument | null> {
+        return (await Plan.findOne({ name: name as PlanType })) as PlanDocument | null;
+    }
+
+    async findById(id: string): Promise<PlanDocument | null> {
+        return await Plan.findById(id);
+    }
+
+    async create(planData: Partial<IPlan>): Promise<PlanDocument> {
+        return await Plan.create(planData);
+    }
+
+    async findAll(): Promise<PlanDocument[]> {
+        return await Plan.find();
+    }
+
+    async findOne(filter: QueryFilter<IPlan>): Promise<PlanDocument | null> {
+        return await Plan.findOne(filter);
+    }
+}
