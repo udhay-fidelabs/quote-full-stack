@@ -21,3 +21,11 @@ export async function updateSettings(settings: ISettings) {
     if (!res.ok) throw new Error("Failed to update settings");
     return res.json();
 }
+
+
+export async function checkAppEmbedStatus(): Promise<{ isEmbedded: boolean; themeId: string; deepLinkUrl: string }> {
+    const res = await fetch("/api/settings/embed-status");
+    if (!res.ok) throw new Error("Failed to check embed status");
+    const json = await res.json();
+    return json.data;
+}
