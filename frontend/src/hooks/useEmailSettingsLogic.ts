@@ -18,6 +18,7 @@ export const DEFAULT_EMAIL_SETTINGS: IEmailSettings = {
   smtpPort: 587,
   smtpSecure: false,
   smtpFrom: '',
+  smtpFromName: '',
   smtpUser: '',
   smtpPass: '',
 };
