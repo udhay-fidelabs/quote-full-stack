@@ -1,14 +1,18 @@
-import { inject, injectable } from "inversify";
-import type { IEmailConfigService, IEmailConfigData, IEmailService, IEmailConfigRepository, ISMTPProviderPreset } from "@/interfaces";
-import type { Session } from "@shopify/shopify-api";
+import type {
+    IEmailConfigData,
+    IEmailConfigRepository,
+    IEmailConfigService,
+    IEmailService,
+    ISMTPProviderPreset,
+} from "@/interfaces";
 import { container } from "@/inversify.config";
 import { TYPES } from "@/types";
+import type { Session } from "@shopify/shopify-api";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class EmailConfigService implements IEmailConfigService {
-    constructor(
-        @inject(TYPES.IEmailConfigRepository) private emailConfigRepository: IEmailConfigRepository
-    ) { }
+    constructor(@inject(TYPES.IEmailConfigRepository) private emailConfigRepository: IEmailConfigRepository) {}
 
     async getConfig(session: Session): Promise<IEmailConfigData> {
         const config = await this.emailConfigRepository.findByShop(session.shop);
@@ -51,7 +55,7 @@ export class EmailConfigService implements IEmailConfigService {
         const emailService = container.get<IEmailService>(TYPES.IEmailService);
         return emailService.testSmtpConnection(publicSettings, {
             smtpUser,
-            smtpPass: realPass
+            smtpPass: realPass,
         });
     }
 }

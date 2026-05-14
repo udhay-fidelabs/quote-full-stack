@@ -50,7 +50,4 @@ export class SettingsController extends BaseController {
             return this.handleError(res, error, API_MESSAGES.SETTINGS.FAILED_UPDATE);
         }
     };
-
-
-
 }

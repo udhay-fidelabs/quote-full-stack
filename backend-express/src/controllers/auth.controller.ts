@@ -1,26 +1,26 @@
 import { shopify } from "@/config/shopify.config";
+import { SubscriptionStatus } from "@/constants";
 import type { IMerchantService, IPlanService } from "@/interfaces";
 import { type ShopifyShopResponse, TYPES } from "@/types";
-import { SubscriptionStatus } from "@/constants";
-import { env } from "@/validations/env.validation";
 import { logger } from "@/utils/logger";
-import type { Types } from "mongoose";
+import { env } from "@/validations/env.validation";
 import type { NextFunction, Request, Response } from "express";
 import { inject, injectable } from "inversify";
+import type { Types } from "mongoose";
 
 @injectable()
 export class AuthController {
     constructor(
         @inject(TYPES.IMerchantService) private merchantService: IMerchantService,
         @inject(TYPES.IPlanService) private planService: IPlanService,
-    ) { }
+    ) {}
 
     callbackStore = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const callbackResponse = await shopify.api.auth.callback({
                 rawRequest: req,
                 rawResponse: res,
-                expiring: true
+                expiring: true,
             });
 
             const { session } = callbackResponse;

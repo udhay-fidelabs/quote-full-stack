@@ -69,7 +69,6 @@ export interface IQuote {
         };
     };
 
-
     // Custom Form Data
     customData?: Record<string, unknown>;
     customImages?: string[];

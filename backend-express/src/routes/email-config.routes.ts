@@ -1,10 +1,10 @@
-import { Router, json } from "express";
-import { container } from "@/inversify.config";
-import type { EmailConfigController } from "@/controllers/email-config.controller";
-import { TYPES } from "@/types";
 import { shopify } from "@/config/shopify.config";
-import { planGuard } from "@/middlewares/plan-guard.middleware";
 import { PlanAction } from "@/constants/plan.constants";
+import type { EmailConfigController } from "@/controllers/email-config.controller";
+import { container } from "@/inversify.config";
+import { planGuard } from "@/middlewares/plan-guard.middleware";
+import { TYPES } from "@/types";
+import { Router, json } from "express";
 
 const emailConfigRouter = Router();
 const controller = container.get<EmailConfigController>(TYPES.EmailConfigController);

@@ -6,20 +6,20 @@ import express from "express";
 
 import mongoose from "mongoose";
 
+import { globalLimiter } from "./config/rate-limit.config";
+import { globalErrorHandler } from "./middlewares/error.middleware";
 import authRouter from "./routes/auth.routes";
 import dashboardRouter from "./routes/dashboard.routes";
 import draftOrderRouter from "./routes/draft-order.routes";
+import emailConfigRouter from "./routes/email-config.routes";
 import formRouter from "./routes/form.routes";
+import legalRouter from "./routes/legal.routes";
 import merchantsRouter from "./routes/merchants.routes";
 import planRouter from "./routes/plan.routes";
 import quotesRouter from "./routes/quotes.routes";
 import settingsRouter from "./routes/settings.routes";
 import uploadRouter from "./routes/upload.routes";
 import webhooksRouter from "./routes/webhooks.routes";
-import legalRouter from "./routes/legal.routes";
-import emailConfigRouter from "./routes/email-config.routes";
-import { globalLimiter } from "./config/rate-limit.config";
-import { globalErrorHandler } from "./middlewares/error.middleware";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

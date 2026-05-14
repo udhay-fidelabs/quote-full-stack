@@ -10,12 +10,18 @@ import { QuoteController } from "./controllers/quote.controller";
 import { SettingsController } from "./controllers/settings.controller";
 import { UploadController } from "./controllers/upload.controller";
 import { WebhooksController } from "./controllers/webhoook.controller";
-import type { IFormRepository, IMerchantRepository, IPlanRepository, IQuoteRepository, IWebhookRegistry } from "./interfaces";
+import type {
+    IFormRepository,
+    IMerchantRepository,
+    IPlanRepository,
+    IQuoteRepository,
+    IWebhookRegistry,
+} from "./interfaces";
 import { DraftOrderMapper } from "./mappers/draft-order.mapper";
+import { EmailConfigRepository } from "./repositorys/email-config";
 import { FormRepository } from "./repositorys/forms";
 import { MerchantRepository } from "./repositorys/merchants";
 import { QuoteRepository } from "./repositorys/quotes";
-import { EmailConfigRepository } from "./repositorys/email-config";
 import { CloudinaryUploadService } from "./services/cloudinary-upload.service";
 import { DashboardService } from "./services/dashboard.service";
 import { DraftOrderService } from "./services/draft-order.service";
@@ -29,9 +35,12 @@ import { UsageService } from "./services/usage.service";
 import { WebhookRegistry } from "./services/webhook-registry.service";
 import { TYPES } from "./types/types";
 
+import { EmailConfigController } from "./controllers/email-config.controller";
 import type {
     IDashboardService,
     IDraftOrderService,
+    IEmailConfigRepository,
+    IEmailConfigService,
     IEmailService,
     IFormService,
     IMerchantService,
@@ -40,12 +49,8 @@ import type {
     ISettingsService,
     IUploadService,
     IUsageService,
-    IEmailConfigService,
-    IEmailConfigRepository,
 } from "./interfaces";
 import { EmailConfigService } from "./services/email-config.service";
-import { EmailConfigController } from "./controllers/email-config.controller";
-
 
 const container = new Container();
 

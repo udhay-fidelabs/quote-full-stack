@@ -28,7 +28,6 @@ async function bootstrap() {
             console.log(
                 `🔧 Configuration: HOST_NAME=${env.HOST_NAME}, API_KEY=${env.SHOPIFY_API_KEY?.substring(0, 5)}...`,
             );
-
         });
 
         const shutdown = async (signal: string) => {

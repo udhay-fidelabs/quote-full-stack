@@ -24,7 +24,7 @@ const shopify = shopifyApp({
         future: {
             customerAddressDefaultFix: true,
             unstable_managedPricingSupport: true,
-            unstable_newEmbeddedAuthStrategy: true
+            unstable_newEmbeddedAuthStrategy: true,
         },
     },
     auth: {

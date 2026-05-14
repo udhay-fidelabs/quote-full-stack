@@ -247,7 +247,10 @@ export function SortableFieldItem({
                           type="number"
                           value={field.minLength?.toString() || ''}
                           onChange={(val) =>
-                            updateFieldProperty('minLength', val ? Number.parseInt(val, 10) : undefined)
+                            updateFieldProperty(
+                              'minLength',
+                              val ? Number.parseInt(val, 10) : undefined,
+                            )
                           }
                           autoComplete="off"
                           disabled={readOnly}
@@ -259,7 +262,10 @@ export function SortableFieldItem({
                           type="number"
                           value={field.maxLength?.toString() || ''}
                           onChange={(val) =>
-                            updateFieldProperty('maxLength', val ? Number.parseInt(val, 10) : undefined)
+                            updateFieldProperty(
+                              'maxLength',
+                              val ? Number.parseInt(val, 10) : undefined,
+                            )
                           }
                           autoComplete="off"
                           disabled={readOnly}

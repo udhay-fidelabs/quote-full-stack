@@ -1,8 +1,8 @@
+import type { IEmailConfigRepository } from "@/interfaces";
+import { EmailConfig, type IEmailConfig } from "@/models/email-config.model";
 import { injectable } from "inversify";
 import type mongoose from "mongoose";
 import { MongooseBaseRepository } from "../base/base.repository";
-import { type IEmailConfig, EmailConfig } from "@/models/email-config.model";
-import type { IEmailConfigRepository } from "@/interfaces";
 
 @injectable()
 export class EmailConfigRepository extends MongooseBaseRepository<IEmailConfig> implements IEmailConfigRepository {
@@ -15,10 +15,6 @@ export class EmailConfigRepository extends MongooseBaseRepository<IEmailConfig> 
     }
 
     async upsertConfig(shop: string, config: Partial<IEmailConfig>): Promise<void> {
-        await this.model.findOneAndUpdate(
-            { shop },
-            { $set: config },
-            { upsert: true, new: true }
-        ).exec();
+        await this.model.findOneAndUpdate({ shop }, { $set: config }, { upsert: true, new: true }).exec();
     }
 }

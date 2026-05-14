@@ -1,19 +1,24 @@
-import React, { useState, useCallback, useMemo } from 'react';
 import {
-  Card,
-  FormLayout,
-  TextField,
-  Select,
-  Button,
-  InlineStack,
-  Text,
   Banner,
   BlockStack,
+  Button,
+  Card,
   Checkbox,
   Collapsible,
+  FormLayout,
+  InlineStack,
+  Select,
+  Text,
+  TextField,
 } from '@shopify/polaris';
 import { useQuery } from '@tanstack/react-query';
-import { testSmtpConnection, getSmtpProviders, type IEmailSettings } from '../../api/email-settings';
+import type React from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import {
+  getSmtpProviders,
+  type IEmailSettings,
+  testSmtpConnection,
+} from '../../api/email-settings';
 
 interface SMTPSettingsProps {
   settings: IEmailSettings;
@@ -51,7 +56,8 @@ const getAuthFieldsConfig = (provider: string) => {
         userHelpText: 'SMTP credentials from Mailgun dashboard.',
         passLabel: 'SMTP Password',
         passHelpText: 'SMTP password from Mailgun dashboard.',
-        hostHelpText: 'Ensure you use the correct region host (smtp.mailgun.org for US, smtp.eu.mailgun.org for EU).',
+        hostHelpText:
+          'Ensure you use the correct region host (smtp.mailgun.org for US, smtp.eu.mailgun.org for EU).',
       };
     case 'ses':
       return {
@@ -59,7 +65,8 @@ const getAuthFieldsConfig = (provider: string) => {
         userHelpText: 'Amazon SES SMTP Username (separate from AWS keys).',
         passLabel: 'SMTP Password',
         passHelpText: 'Amazon SES SMTP Password.',
-        hostHelpText: 'Note: Update host to your specific AWS region (e.g. email-smtp.us-west-2.amazonaws.com).',
+        hostHelpText:
+          'Note: Update host to your specific AWS region (e.g. email-smtp.us-west-2.amazonaws.com).',
       };
     case 'elastic':
       return {
@@ -95,7 +102,10 @@ export const SMTPSettings: React.FC<SMTPSettingsProps> = ({ settings, onChange }
     queryFn: getSmtpProviders,
   });
 
-  const providerOptions = useMemo(() => providers.map((p) => ({ label: p.label, value: p.value })), [providers]);
+  const providerOptions = useMemo(
+    () => providers.map((p) => ({ label: p.label, value: p.value })),
+    [providers],
+  );
 
   const handleProviderChange = useCallback(
     (value: string) => {
@@ -136,7 +146,10 @@ export const SMTPSettings: React.FC<SMTPSettingsProps> = ({ settings, onChange }
     }
   };
 
-  const authConfig = useMemo(() => getAuthFieldsConfig(settings.smtpProvider), [settings.smtpProvider]);
+  const authConfig = useMemo(
+    () => getAuthFieldsConfig(settings.smtpProvider),
+    [settings.smtpProvider],
+  );
 
   return (
     <BlockStack gap="400">
@@ -146,8 +159,8 @@ export const SMTPSettings: React.FC<SMTPSettingsProps> = ({ settings, onChange }
             SMTP Configuration
           </Text>
           <Text as="p" tone="subdued">
-            Configure your own email server to send quote notifications from your own email address. If disabled, we'll
-            use our default email service.
+            Configure your own email server to send quote notifications from your own email address.
+            If disabled, we'll use our default email service.
           </Text>
 
           <Checkbox
@@ -267,15 +280,16 @@ export const SMTPSettings: React.FC<SMTPSettingsProps> = ({ settings, onChange }
         </BlockStack>
       </Card>
 
-      {settings.smtpEnabled && (settings.smtpProvider === 'google' || settings.smtpProvider === 'outlook') && (
-        <Banner tone="info" title="Note on Google/Outlook Security">
-          <p>
-            To use {settings.smtpProvider === 'google' ? 'Gmail' : 'Outlook'}, you must create an
-            <strong> App Password</strong> in your account settings. Standard passwords will not work if Two-Factor
-            Authentication (2FA) is enabled.
-          </p>
-        </Banner>
-      )}
+      {settings.smtpEnabled &&
+        (settings.smtpProvider === 'google' || settings.smtpProvider === 'outlook') && (
+          <Banner tone="info" title="Note on Google/Outlook Security">
+            <p>
+              To use {settings.smtpProvider === 'google' ? 'Gmail' : 'Outlook'}, you must create an
+              <strong> App Password</strong> in your account settings. Standard passwords will not
+              work if Two-Factor Authentication (2FA) is enabled.
+            </p>
+          </Banner>
+        )}
     </BlockStack>
   );
 };

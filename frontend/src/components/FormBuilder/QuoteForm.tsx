@@ -269,7 +269,12 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({
                           <path d="M0 1H12" stroke="currentColor" strokeWidth="2" />
                         </svg>
                       </button>
-                      <input id={`qty-${product.id}`} type="number" value={idx === 0 ? '1' : '2'} readOnly />
+                      <input
+                        id={`qty-${product.id}`}
+                        type="number"
+                        value={idx === 0 ? '1' : '2'}
+                        readOnly
+                      />
                       <button type="button" className="rq-qty-adjust plus" disabled={isPreview}>
                         <svg
                           width="12"

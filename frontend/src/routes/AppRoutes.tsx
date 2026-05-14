@@ -1,19 +1,25 @@
 import type React from 'react';
-import { Suspense, lazy } from 'react';
+import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { PageLoader } from '../components/loaders/PageLoader';
 
 // Lazy load pages
-const Dashboard = lazy(() => import('../pages/Dashboard').then(m => ({ default: m.Dashboard })));
-const Settings = lazy(() => import('../pages/Settings').then(m => ({ default: m.Settings })));
+const Dashboard = lazy(() => import('../pages/Dashboard').then((m) => ({ default: m.Dashboard })));
+const Settings = lazy(() => import('../pages/Settings').then((m) => ({ default: m.Settings })));
 const EmailSettings = lazy(() => import('../pages/EmailSettings'));
-const FormBuilder = lazy(() => import('../pages/FormBuilder').then(m => ({ default: m.FormBuilder })));
-const Quotes = lazy(() => import('../pages/Quotes').then(m => ({ default: m.Quotes })));
-const QuoteDetails = lazy(() => import('../pages/QuoteDetails').then(m => ({ default: m.QuoteDetails })));
-const DraftOrders = lazy(() => import('../pages/DraftOrders').then(m => ({ default: m.DraftOrders })));
-const Plans = lazy(() => import('../pages/Plans').then(m => ({ default: m.Plans })));
-const Legal = lazy(() => import('../pages/Legal').then(m => ({ default: m.Legal })));
-const Support = lazy(() => import('../pages/Support').then(m => ({ default: m.Support })));
+const FormBuilder = lazy(() =>
+  import('../pages/FormBuilder').then((m) => ({ default: m.FormBuilder })),
+);
+const Quotes = lazy(() => import('../pages/Quotes').then((m) => ({ default: m.Quotes })));
+const QuoteDetails = lazy(() =>
+  import('../pages/QuoteDetails').then((m) => ({ default: m.QuoteDetails })),
+);
+const DraftOrders = lazy(() =>
+  import('../pages/DraftOrders').then((m) => ({ default: m.DraftOrders })),
+);
+const Plans = lazy(() => import('../pages/Plans').then((m) => ({ default: m.Plans })));
+const Legal = lazy(() => import('../pages/Legal').then((m) => ({ default: m.Legal })));
+const Support = lazy(() => import('../pages/Support').then((m) => ({ default: m.Support })));
 
 export const AppRoutes: React.FC = () => {
   return (
