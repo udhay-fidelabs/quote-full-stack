@@ -108,6 +108,7 @@ export const SETTINGS_DEFAULTS = {
         smtpPort: 587,
         smtpSecure: false,
         smtpFrom: "",
+        smtpFromName: "",
         title: "Submit Your Quote Request",
         description: "Fill in your details and we'll get back to you shortly",
         successTitle: "Quote Requested Successfully!",
@@ -125,7 +126,7 @@ export const SMTP_PROVIDER_PRESETS = [
     { label: "Mailgun", value: "mailgun", host: "smtp.mailgun.org", port: 587, secure: false },
     { label: "Amazon SES", value: "ses", host: "email-smtp.us-east-1.amazonaws.com", port: 587, secure: false },
     { label: "Elastic Email", value: "elastic", host: "smtp.elasticemail.com", port: 2525, secure: false },
-    { label: "Netcore / Pepipost", value: "netcore", host: "smtp.pepipost.com", port: 587, secure: false },
+    { label: "Netcore Cloud (formerly Pepipost)", value: "netcore", host: "smtp.pepipost.com", port: 587, secure: false },
     { label: "Custom SMTP", value: "custom", host: "", port: 587, secure: false },
 ];
 

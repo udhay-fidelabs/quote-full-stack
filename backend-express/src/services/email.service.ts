@@ -84,10 +84,13 @@ export class EmailService implements IEmailService {
         try {
             await transporter.verify();
 
+            const fromName = config.smtpFromName || APP_DEFAULTS.EMAIL_SENDER_NAME;
+            const fromEmail = config.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
+
             // Send a test email
             const mailOptions = {
-                from: config.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM,
-                to: config.adminEmail || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM,
+                from: `"${fromName}" <${fromEmail}>`,
+                to: config.adminEmail || fromEmail,
                 subject: "SMTP Test Connection - Success",
                 text: "This is a test email to verify your SMTP configuration. If you received this, your settings are correct!",
             };
@@ -131,10 +134,11 @@ export class EmailService implements IEmailService {
 
         try {
             const merchant = await this.merchantService.getMerchantByShop(quote.shop);
-            const storeName = this.getStoreDisplayName(merchant, quote.shop);
+            const storeName = emailConfig.smtpFromName || this.getStoreDisplayName(merchant, quote.shop);
+            const fromEmail = emailConfig.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
 
             const mailOptions = {
-                from: emailConfig.smtpFrom || `"${APP_DEFAULTS.EMAIL_SENDER_NAME}" <${env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM}>`,
+                from: `"${storeName}" <${fromEmail}>`,
                 to: quote.customerEmail,
                 subject: `Accepted Quote Request - ${quote.productTitle}`,
                 html: `
@@ -183,10 +187,11 @@ export class EmailService implements IEmailService {
 
         try {
             const merchant = await this.merchantService.getMerchantByShop(quote.shop);
-            const storeName = this.getStoreDisplayName(merchant, quote.shop);
+            const storeName = emailConfig.smtpFromName || this.getStoreDisplayName(merchant, quote.shop);
+            const fromEmail = emailConfig.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
 
             const mailOptions = {
-                from: emailConfig.smtpFrom || `"${APP_DEFAULTS.EMAIL_SENDER_NAME}" <${env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM}>`,
+                from: `"${storeName}" <${fromEmail}>`,
                 to: quote.customerEmail,
                 subject: `Update regarding your Quote Request - ${quote.productTitle}`,
                 html: `
@@ -223,8 +228,11 @@ export class EmailService implements IEmailService {
     }
 
     private async sendToMerchant(merchantEmail: string, quote: QuoteDocument, transporter: nodemailer.Transporter, emailConfig: IEmailConfigData) {
+        const fromName = emailConfig.smtpFromName || APP_DEFAULTS.EMAIL_SENDER_NAME;
+        const fromEmail = emailConfig.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
+
         const mailOptions = {
-            from: emailConfig.smtpFrom || `"${APP_DEFAULTS.EMAIL_SENDER_NAME}" <${env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM}>`,
+            from: `"${fromName}" <${fromEmail}>`,
             to: emailConfig.adminEmail || merchantEmail,
             subject: EMAIL_SUBJECTS.NEW_QUOTE(quote.customerName || ""),
             html: this.getMerchantTemplate(quote),
@@ -236,10 +244,11 @@ export class EmailService implements IEmailService {
 
     private async sendToCustomer(customerEmail: string, quote: QuoteDocument, isPro: boolean, transporter: nodemailer.Transporter, emailConfig: IEmailConfigData) {
         const merchant = await this.merchantService.getMerchantByShop(quote.shop);
-        const storeName = this.getStoreDisplayName(merchant, quote.shop);
+        const storeName = emailConfig.smtpFromName || this.getStoreDisplayName(merchant, quote.shop);
+        const fromEmail = emailConfig.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
 
         const mailOptions = {
-            from: emailConfig.smtpFrom || `"${storeName}" <${env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM}>`,
+            from: `"${storeName}" <${fromEmail}>`,
             to: customerEmail,
             subject: EMAIL_SUBJECTS.CUSTOMER_CONFIRMATION,
             html: this.getCustomerTemplate(quote, isPro, storeName),
