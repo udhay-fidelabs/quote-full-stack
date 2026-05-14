@@ -1,16 +1,13 @@
-import { API_MESSAGES } from "@/constants/app.constants";
-import type { IEmailConfigService, IEmailService } from "@/interfaces";
+import type { IEmailConfigService } from "@/interfaces";
 import { TYPES } from "@/types";
 import type { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 import { BaseController } from "./base.controller";
-import { EmailConfig } from "@/models/email-config.model";
 
 @injectable()
 export class EmailConfigController extends BaseController {
     constructor(
         @inject(TYPES.IEmailConfigService) private emailConfigService: IEmailConfigService,
-        @inject(TYPES.IEmailService) private emailService: IEmailService,
     ) {
         super();
     }
@@ -38,19 +35,7 @@ export class EmailConfigController extends BaseController {
     public testSmtp = async (req: Request, res: Response) => {
         try {
             const session = res.locals.shopify.session;
-            const { smtpUser, smtpPass, ...publicSettings } = req.body;
-
-            // If password is masked, fetch the real one
-            let realPass = smtpPass;
-            if (smtpPass === "********") {
-                const config = await EmailConfig.findOne({ shop: session.shop });
-                realPass = config?.smtpPass || "";
-            }
-
-            const success = await this.emailService.testSmtpConnection(publicSettings, {
-                smtpUser,
-                smtpPass: realPass,
-            });
+            const success = await this.emailConfigService.testConnection(session, req.body);
 
             if (success) {
                 return this.ok(res, { success: true }, "SMTP connection successful. Test email sent.");
@@ -60,6 +45,15 @@ export class EmailConfigController extends BaseController {
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : "SMTP test failed";
             return this.handleError(res, error, message);
+        }
+    };
+
+    public getSmtpProviders = async (req: Request, res: Response) => {
+        try {
+            const providers = await this.emailConfigService.getSmtpProviders();
+            return this.ok(res, providers, "SMTP providers retrieved");
+        } catch (error) {
+            return this.handleError(res, error, "Failed to retrieve SMTP providers");
         }
     };
 }

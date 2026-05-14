@@ -15,6 +15,7 @@ import { DraftOrderMapper } from "./mappers/draft-order.mapper";
 import { FormRepository } from "./repositorys/forms";
 import { MerchantRepository } from "./repositorys/merchants";
 import { QuoteRepository } from "./repositorys/quotes";
+import { EmailConfigRepository } from "./repositorys/email-config";
 import { CloudinaryUploadService } from "./services/cloudinary-upload.service";
 import { DashboardService } from "./services/dashboard.service";
 import { DraftOrderService } from "./services/draft-order.service";
@@ -40,8 +41,8 @@ import type {
     ISettingsService,
     IUploadService,
     IUsageService,
-    IWebhookRegistry,
     IEmailConfigService,
+    IEmailConfigRepository,
 } from "./interfaces";
 import { EmailConfigService } from "./services/email-config.service";
 import { EmailConfigController } from "./controllers/email-config.controller";
@@ -52,6 +53,7 @@ const container = new Container();
 container.bind<IMerchantRepository>(TYPES.IMerchantRepository).to(MerchantRepository).inSingletonScope();
 container.bind<IQuoteRepository>(TYPES.IQuoteRepository).to(QuoteRepository).inSingletonScope();
 container.bind<IPlanRepository>(TYPES.IPlanRepository).to(PlanRepository).inSingletonScope();
+container.bind<IEmailConfigRepository>(TYPES.IEmailConfigRepository).to(EmailConfigRepository).inSingletonScope();
 
 container.bind<IMerchantService>(TYPES.IMerchantService).to(MerchantService).inSingletonScope();
 container.bind<IQuoteService>(TYPES.IQuoteService).to(QuoteService).inSingletonScope();

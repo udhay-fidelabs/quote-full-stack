@@ -56,7 +56,7 @@ export function useEmailSettingsLogic() {
 
         // Provider switching logic
         if (key === 'smtpProvider' && value !== 'custom') {
-            import('../api/settings/index').then(({ getSmtpProviders }) => {
+            import('../api/email-settings').then(({ getSmtpProviders }) => {
                 getSmtpProviders().then(providers => {
                     const provider = providers.find(p => p.value === value);
                     if (provider) {

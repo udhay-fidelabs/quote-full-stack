@@ -22,15 +22,12 @@ export class SettingsController extends BaseController {
             await this.settingsService.ensureMetafieldDefinitions(session);
 
             const settings = await this.settingsService.getSettings(session);
-            const privateSettings = await this.settingsService.getPrivateSettings(session);
             const plan = await this.planService.getMerchantPlan(session.shop);
             const themeAudit = await this.settingsService.checkAppEmbedStatus(session);
 
             // Append plan and connectivity information to settings response
             const settingsExtended = {
                 ...settings,
-                smtpUser: privateSettings.smtpUser || "",
-                smtpPass: privateSettings.smtpPass ? "********" : "", // Mask password
                 plan: plan?.name,
                 isAppEmbedded: themeAudit.isEmbedded,
                 deepLinkUrl: themeAudit.themeId
@@ -47,44 +44,7 @@ export class SettingsController extends BaseController {
     public updateSettings = async (req: Request, res: Response) => {
         try {
             const session = res.locals.shopify.session;
-            const { smtpUser, smtpPass, ...publicSettings } = req.body;
-
-            // Update public settings
-            await this.settingsService.updateSettings(session, publicSettings);
-
-            // Update private settings if provided
-            if (smtpUser !== undefined || smtpPass !== undefined) {
-                const currentPrivate = await this.settingsService.getPrivateSettings(session);
-                const updatedPrivate = {
-                    smtpUser: smtpUser !== undefined ? smtpUser : currentPrivate.smtpUser,
-                    smtpPass: smtpPass !== undefined && smtpPass !== "********" ? smtpPass : currentPrivate.smtpPass,
-                };
-                await this.settingsService.updatePrivateSettings(session, updatedPrivate);
-            }
-
-            return this.ok(res, { success: true }, API_MESSAGES.SETTINGS.UPDATED);
-        } catch (error) {
-            return this.handleError(res, error, API_MESSAGES.SETTINGS.FAILED_UPDATE);
-        }
-    };
-
-    public getPrivateSettings = async (req: Request, res: Response) => {
-        try {
-            const session = res.locals.shopify.session;
-            const privateSettings = await this.settingsService.getPrivateSettings(session);
-            return this.ok(res, {
-                smtpUser: privateSettings.smtpUser || "",
-                smtpPass: privateSettings.smtpPass ? "********" : "",
-            });
-        } catch (error) {
-            return this.handleError(res, error, API_MESSAGES.SETTINGS.FAILED_RETRIEVE);
-        }
-    };
-
-    public updatePrivateSettings = async (req: Request, res: Response) => {
-        try {
-            const session = res.locals.shopify.session;
-            await this.settingsService.updatePrivateSettings(session, req.body);
+            await this.settingsService.updateSettings(session, req.body);
             return this.ok(res, { success: true }, API_MESSAGES.SETTINGS.UPDATED);
         } catch (error) {
             return this.handleError(res, error, API_MESSAGES.SETTINGS.FAILED_UPDATE);
@@ -92,8 +52,5 @@ export class SettingsController extends BaseController {
     };
 
 
-    public getSmtpProviders = async (req: Request, res: Response) => {
-        const { SMTP_PROVIDER_PRESETS } = await import("@/constants/app.constants");
-        return this.ok(res, SMTP_PROVIDER_PRESETS, "SMTP providers retrieved");
-    };
+
 }

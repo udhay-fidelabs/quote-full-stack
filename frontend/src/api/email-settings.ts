@@ -41,3 +41,10 @@ export async function testSmtpConnection(settings: Partial<IEmailSettings>): Pro
     const json = await res.json();
     return json;
 }
+
+export async function getSmtpProviders(): Promise<Array<{ label: string; value: string; host: string; port: number; secure: boolean }>> {
+    const res = await fetch("/api/email-settings/smtp-providers");
+    if (!res.ok) throw new Error("Failed to load SMTP providers");
+    const json = await res.json();
+    return json.data;
+}

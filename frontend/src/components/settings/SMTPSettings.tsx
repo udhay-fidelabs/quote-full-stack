@@ -13,8 +13,7 @@ import {
     Collapsible,
 } from "@shopify/polaris";
 import { useQuery } from "@tanstack/react-query";
-import { testSmtpConnection, getSmtpProviders } from "../../api/settings";
-import type { IEmailSettings } from "../../api/email-settings";
+import { testSmtpConnection, getSmtpProviders, type IEmailSettings } from "../../api/email-settings";
 
 interface SMTPSettingsProps {
     settings: IEmailSettings;

@@ -14,6 +14,7 @@ emailConfigRouter.use(json());
 
 emailConfigRouter.get("/", planGuard(PlanAction.SETTINGS_UPDATE), controller.getConfig);
 emailConfigRouter.put("/", planGuard(PlanAction.SETTINGS_UPDATE), controller.updateConfig);
+emailConfigRouter.get("/smtp-providers", planGuard(PlanAction.SETTINGS_UPDATE), controller.getSmtpProviders);
 emailConfigRouter.post("/test-smtp", planGuard(PlanAction.SETTINGS_UPDATE), controller.testSmtp);
 
 export default emailConfigRouter;
