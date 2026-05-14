@@ -1,4 +1,4 @@
-import { shopify, sessionStorage } from "@/config";
+import { sessionStorage, shopify } from "@/config";
 import { APP_DEFAULTS, EMAIL_SUBJECTS, PlanType, SETTINGS_DEFAULTS } from "@/constants";
 import type { IEmailService, IMerchantService, IPlanService, ISettings } from "@/interfaces";
 import type { IEmailConfigData, IEmailConfigService } from "@/interfaces";
@@ -48,7 +48,12 @@ export class EmailService implements IEmailService {
             logger.warn(`[EmailService] No active sessions found for shop: ${shop}. Falling back to default SMTP.`);
             const transporter = await this.getTransporter(SETTINGS_DEFAULTS.DEFAULTS as unknown as IEmailConfigData);
             if (transporter) {
-                await this.sendToMerchant(merchant.email as string, quote, transporter, SETTINGS_DEFAULTS.DEFAULTS as unknown as IEmailConfigData);
+                await this.sendToMerchant(
+                    merchant.email as string,
+                    quote,
+                    transporter,
+                    SETTINGS_DEFAULTS.DEFAULTS as unknown as IEmailConfigData,
+                );
             }
             return;
         }
@@ -76,7 +81,10 @@ export class EmailService implements IEmailService {
         }
     }
 
-    async testSmtpConnection(publicSettings: Partial<IEmailConfigData>, privateSettings: Partial<IEmailConfigData>): Promise<boolean> {
+    async testSmtpConnection(
+        publicSettings: Partial<IEmailConfigData>,
+        privateSettings: Partial<IEmailConfigData>,
+    ): Promise<boolean> {
         const config = { ...publicSettings, ...privateSettings } as IEmailConfigData;
         const transporter = await this.getTransporter(config);
         if (!transporter) return false;
@@ -84,10 +92,13 @@ export class EmailService implements IEmailService {
         try {
             await transporter.verify();
 
+            const fromName = config.smtpFromName || APP_DEFAULTS.EMAIL_SENDER_NAME;
+            const fromEmail = config.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
+
             // Send a test email
             const mailOptions = {
-                from: config.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM,
-                to: config.adminEmail || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM,
+                from: `"${fromName}" <${fromEmail}>`,
+                to: config.adminEmail || fromEmail,
                 subject: "SMTP Test Connection - Success",
                 text: "This is a test email to verify your SMTP configuration. If you received this, your settings are correct!",
             };
@@ -131,10 +142,11 @@ export class EmailService implements IEmailService {
 
         try {
             const merchant = await this.merchantService.getMerchantByShop(quote.shop);
-            const storeName = this.getStoreDisplayName(merchant, quote.shop);
+            const storeName = emailConfig.smtpFromName || this.getStoreDisplayName(merchant, quote.shop);
+            const fromEmail = emailConfig.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
 
             const mailOptions = {
-                from: emailConfig.smtpFrom || `"${APP_DEFAULTS.EMAIL_SENDER_NAME}" <${env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM}>`,
+                from: `"${storeName}" <${fromEmail}>`,
                 to: quote.customerEmail,
                 subject: `Accepted Quote Request - ${quote.productTitle}`,
                 html: `
@@ -183,10 +195,11 @@ export class EmailService implements IEmailService {
 
         try {
             const merchant = await this.merchantService.getMerchantByShop(quote.shop);
-            const storeName = this.getStoreDisplayName(merchant, quote.shop);
+            const storeName = emailConfig.smtpFromName || this.getStoreDisplayName(merchant, quote.shop);
+            const fromEmail = emailConfig.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
 
             const mailOptions = {
-                from: emailConfig.smtpFrom || `"${APP_DEFAULTS.EMAIL_SENDER_NAME}" <${env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM}>`,
+                from: `"${storeName}" <${fromEmail}>`,
                 to: quote.customerEmail,
                 subject: `Update regarding your Quote Request - ${quote.productTitle}`,
                 html: `
@@ -222,9 +235,17 @@ export class EmailService implements IEmailService {
         }
     }
 
-    private async sendToMerchant(merchantEmail: string, quote: QuoteDocument, transporter: nodemailer.Transporter, emailConfig: IEmailConfigData) {
+    private async sendToMerchant(
+        merchantEmail: string,
+        quote: QuoteDocument,
+        transporter: nodemailer.Transporter,
+        emailConfig: IEmailConfigData,
+    ) {
+        const fromName = emailConfig.smtpFromName || APP_DEFAULTS.EMAIL_SENDER_NAME;
+        const fromEmail = emailConfig.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
+
         const mailOptions = {
-            from: emailConfig.smtpFrom || `"${APP_DEFAULTS.EMAIL_SENDER_NAME}" <${env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM}>`,
+            from: `"${fromName}" <${fromEmail}>`,
             to: emailConfig.adminEmail || merchantEmail,
             subject: EMAIL_SUBJECTS.NEW_QUOTE(quote.customerName || ""),
             html: this.getMerchantTemplate(quote),
@@ -234,12 +255,19 @@ export class EmailService implements IEmailService {
         logger.info(`[EmailService] Notification sent to merchant: ${merchantEmail}`);
     }
 
-    private async sendToCustomer(customerEmail: string, quote: QuoteDocument, isPro: boolean, transporter: nodemailer.Transporter, emailConfig: IEmailConfigData) {
+    private async sendToCustomer(
+        customerEmail: string,
+        quote: QuoteDocument,
+        isPro: boolean,
+        transporter: nodemailer.Transporter,
+        emailConfig: IEmailConfigData,
+    ) {
         const merchant = await this.merchantService.getMerchantByShop(quote.shop);
-        const storeName = this.getStoreDisplayName(merchant, quote.shop);
+        const storeName = emailConfig.smtpFromName || this.getStoreDisplayName(merchant, quote.shop);
+        const fromEmail = emailConfig.smtpFrom || env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM;
 
         const mailOptions = {
-            from: emailConfig.smtpFrom || `"${storeName}" <${env.SMTP_FROM || APP_DEFAULTS.EMAIL_FROM}>`,
+            from: `"${storeName}" <${fromEmail}>`,
             to: customerEmail,
             subject: EMAIL_SUBJECTS.CUSTOMER_CONFIRMATION,
             html: this.getCustomerTemplate(quote, isPro, storeName),
@@ -316,7 +344,7 @@ export class EmailService implements IEmailService {
         return shopHandle
             .replace(/-/g, " ")
             .split(" ")
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ");
     }
 }

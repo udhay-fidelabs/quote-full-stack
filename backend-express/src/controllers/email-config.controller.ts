@@ -6,9 +6,7 @@ import { BaseController } from "./base.controller";
 
 @injectable()
 export class EmailConfigController extends BaseController {
-    constructor(
-        @inject(TYPES.IEmailConfigService) private emailConfigService: IEmailConfigService,
-    ) {
+    constructor(@inject(TYPES.IEmailConfigService) private emailConfigService: IEmailConfigService) {
         super();
     }
 

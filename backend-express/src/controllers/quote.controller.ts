@@ -172,7 +172,12 @@ export class QuoteController extends BaseController {
             const { message } = req.body;
 
             if (!id) {
-                return this.handleError(res, new Error("Quote ID is required"), "Missing quote ID", HTTP_STATUS.BAD_REQUEST);
+                return this.handleError(
+                    res,
+                    new Error("Quote ID is required"),
+                    "Missing quote ID",
+                    HTTP_STATUS.BAD_REQUEST,
+                );
             }
 
             await this.quoteService.rejectQuote(session, id, message || "");
@@ -190,7 +195,12 @@ export class QuoteController extends BaseController {
             const { status } = req.body;
 
             if (!id || !status) {
-                return this.handleError(res, new Error("ID and status are required"), "Missing fields", HTTP_STATUS.BAD_REQUEST);
+                return this.handleError(
+                    res,
+                    new Error("ID and status are required"),
+                    "Missing fields",
+                    HTTP_STATUS.BAD_REQUEST,
+                );
             }
 
             const quote = await this.quoteService.updateQuoteStatus(session, id, status as IQuote["status"]);

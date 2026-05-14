@@ -51,8 +51,7 @@ export class DraftOrderMapper {
     }
 
     private buildNote(quote: QuoteDocument): string {
-        const message =
-            quote.customerMessage || `Quote request from ${quote.firstName} ${quote.lastName}`;
+        const message = quote.customerMessage || `Quote request from ${quote.firstName} ${quote.lastName}`;
         return this.sanitize(message);
     }
 

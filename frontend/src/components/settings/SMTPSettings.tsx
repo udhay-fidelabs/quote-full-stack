@@ -56,6 +56,8 @@ const getAuthFieldsConfig = (provider: string) => {
         userHelpText: 'SMTP credentials from Mailgun dashboard.',
         passLabel: 'SMTP Password',
         passHelpText: 'SMTP password from Mailgun dashboard.',
+        hostHelpText:
+          'Ensure you use the correct region host (smtp.mailgun.org for US, smtp.eu.mailgun.org for EU).',
       };
     case 'ses':
       return {
@@ -63,6 +65,8 @@ const getAuthFieldsConfig = (provider: string) => {
         userHelpText: 'Amazon SES SMTP Username (separate from AWS keys).',
         passLabel: 'SMTP Password',
         passHelpText: 'Amazon SES SMTP Password.',
+        hostHelpText:
+          'Note: Update host to your specific AWS region (e.g. email-smtp.us-west-2.amazonaws.com).',
       };
     case 'elastic':
       return {
@@ -74,9 +78,9 @@ const getAuthFieldsConfig = (provider: string) => {
     case 'netcore':
       return {
         userLabel: 'Username',
-        userHelpText: 'Your Pepipost username.',
+        userHelpText: 'Your Netcore Cloud / Pepipost username.',
         passLabel: 'API Key',
-        passHelpText: 'Your Pepipost API Key.',
+        passHelpText: 'Your Netcore Cloud / Pepipost API Key.',
       };
     default:
       return {
@@ -174,14 +178,24 @@ export const SMTPSettings: React.FC<SMTPSettingsProps> = ({ settings, onChange }
                 onChange={handleProviderChange}
               />
 
-              <TextField
-                label="Sender Email (From)"
-                value={settings.smtpFrom}
-                onChange={(value) => onChange('smtpFrom', value)}
-                placeholder="noreply@yourstore.com"
-                autoComplete="email"
-                helpText="The email address your customers will see."
-              />
+              <FormLayout.Group>
+                <TextField
+                  label="Sender Name"
+                  value={settings.smtpFromName}
+                  onChange={(value) => onChange('smtpFromName', value)}
+                  placeholder="Your Store Name"
+                  autoComplete="name"
+                  helpText="The name that will appear as the sender."
+                />
+                <TextField
+                  label="Sender Email (From)"
+                  value={settings.smtpFrom}
+                  onChange={(value) => onChange('smtpFrom', value)}
+                  placeholder="noreply@yourstore.com"
+                  autoComplete="email"
+                  helpText="The email address your customers will see."
+                />
+              </FormLayout.Group>
 
               <FormLayout.Group>
                 <TextField
@@ -225,6 +239,7 @@ export const SMTPSettings: React.FC<SMTPSettingsProps> = ({ settings, onChange }
                         value={settings.smtpHost}
                         onChange={(value) => onChange('smtpHost', value)}
                         autoComplete="off"
+                        helpText={authConfig.hostHelpText}
                       />
                       <TextField
                         label="SMTP Port"

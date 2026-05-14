@@ -1,5 +1,5 @@
-import type mongoose from "mongoose";
 import type { IEmailConfig } from "@/models/email-config.model";
+import type mongoose from "mongoose";
 import type { IBaseRepository } from "./IBaseRepository";
 
 export interface IEmailConfigRepository extends IBaseRepository<IEmailConfig> {

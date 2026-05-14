@@ -1,6 +1,6 @@
 import type { SubscriptionStatus } from "@/constants";
-import type { IPrivateSettings, ISettings } from "../interfaces/services/ISettingsService";
 import type { HydratedDocument, Types } from "mongoose";
+import type { IPrivateSettings, ISettings } from "../interfaces/services/ISettingsService";
 
 export interface IMerchantUsage {
     quotesUsed: number;

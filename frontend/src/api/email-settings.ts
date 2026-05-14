@@ -8,6 +8,7 @@ export interface IEmailSettings {
   smtpPort: number;
   smtpSecure: boolean;
   smtpFrom: string;
+  smtpFromName: string;
   smtpUser: string;
   smtpPass: string;
 }

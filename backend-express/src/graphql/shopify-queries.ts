@@ -31,7 +31,6 @@ export const GET_PRODUCTS_BY_IDS_QUERY = `#graphql
   }
 `;
 
-
 export const GET_SHOP_CURRENCY_QUERY = `#graphql
   query {
     shop {

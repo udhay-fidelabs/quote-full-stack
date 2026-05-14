@@ -1,7 +1,12 @@
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { getEmailSettings, getSmtpProviders, type IEmailSettings, updateEmailSettings } from '../api/email-settings';
+import {
+  getEmailSettings,
+  getSmtpProviders,
+  type IEmailSettings,
+  updateEmailSettings,
+} from '../api/email-settings';
 
 export const DEFAULT_EMAIL_SETTINGS: IEmailSettings = {
   adminEmailEnabled: true,
@@ -13,6 +18,7 @@ export const DEFAULT_EMAIL_SETTINGS: IEmailSettings = {
   smtpPort: 587,
   smtpSecure: false,
   smtpFrom: '',
+  smtpFromName: '',
   smtpUser: '',
   smtpPass: '',
 };
@@ -69,7 +75,7 @@ export function useEmailSettingsLogic() {
             smtpHost: provider.host,
             smtpPort: provider.port,
             smtpSecure: provider.secure,
-            smtpUser: value === 'sendgrid' ? 'apikey' : (prev?.smtpUser || ''),
+            smtpUser: value === 'sendgrid' ? 'apikey' : prev?.smtpUser || '',
           }));
         }
       });

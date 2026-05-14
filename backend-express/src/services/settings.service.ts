@@ -7,24 +7,22 @@ import {
     UPDATE_GLOBAL_SETTINGS_MUTATION,
 } from "@/graphql/settings";
 import type { ISettings, ISettingsService } from "@/interfaces";
+import type { IMerchantService } from "@/interfaces";
+import type { IPrivateSettings } from "@/interfaces/services/ISettingsService";
 import type {
     GetSettingsResponse,
     MetafieldDefinitionCreateResponse,
     MetafieldsSetResponse,
     ShopIdResponse,
 } from "@/types";
+import { TYPES } from "@/types";
 import { logger } from "@/utils/logger";
 import type { Session } from "@shopify/shopify-api";
-import { TYPES } from "@/types";
 import { inject, injectable } from "inversify";
-import type { IMerchantService } from "@/interfaces";
-import type { IPrivateSettings } from "@/interfaces/services/ISettingsService";
 
 @injectable()
 export class SettingsService implements ISettingsService {
-    constructor(
-        @inject(TYPES.IMerchantService) private merchantService: IMerchantService,
-    ) { }
+    constructor(@inject(TYPES.IMerchantService) private merchantService: IMerchantService) {}
     async ensureMetafieldDefinitions(session: Session): Promise<void> {
         const client = new shopify.api.clients.Graphql({ session });
 
@@ -65,7 +63,9 @@ export class SettingsService implements ISettingsService {
                     if (
                         userErrors.some(
                             (e: { code: string; message?: string }) =>
-                                e.code === "ALREADY_EXISTS" || e.code === "TAKEN" || e.message?.includes("already exists"),
+                                e.code === "ALREADY_EXISTS" ||
+                                e.code === "TAKEN" ||
+                                e.message?.includes("already exists"),
                         )
                     ) {
                         continue;
@@ -130,7 +130,9 @@ export class SettingsService implements ISettingsService {
                 }
             `;
 
-            const response = await client.request<{ shop?: { metafield?: { value: string } } }>(GET_PRIVATE_SETTINGS_QUERY);
+            const response = await client.request<{ shop?: { metafield?: { value: string } } }>(
+                GET_PRIVATE_SETTINGS_QUERY,
+            );
             const value = response.data?.shop?.metafield?.value;
 
             if (value) {
@@ -219,7 +221,15 @@ export class SettingsService implements ISettingsService {
 
     async checkAppEmbedStatus(session: Session): Promise<{ isEmbedded: boolean; themeId: string }> {
         try {
-            const themes = await (shopify.api.rest as unknown as { Theme: { all: (params: { session: Session }) => Promise<{ data: Array<{ role: string; id: number | string }> }> } }).Theme.all({
+            const themes = await (
+                shopify.api.rest as unknown as {
+                    Theme: {
+                        all: (params: { session: Session }) => Promise<{
+                            data: Array<{ role: string; id: number | string }>;
+                        }>;
+                    };
+                }
+            ).Theme.all({
                 session: session,
             });
 
@@ -231,7 +241,7 @@ export class SettingsService implements ISettingsService {
 
             return {
                 isEmbedded: false, // Default to false, frontend will override via App Bridge
-                themeId: String(mainTheme.id)
+                themeId: String(mainTheme.id),
             };
         } catch (error) {
             logger.error("[SettingsService] Error finding main theme:", error);

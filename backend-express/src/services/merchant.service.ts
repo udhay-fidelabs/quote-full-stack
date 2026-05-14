@@ -14,7 +14,7 @@ export class MerchantService implements IMerchantService {
         @inject(TYPES.IPlanRepository) private planRepository: IPlanRepository,
         @inject(TYPES.IQuoteRepository) private quoteRepository: IQuoteRepository,
         @inject(TYPES.IFormRepository) private formRepository: IFormRepository,
-    ) { }
+    ) {}
 
     async getMerchantByShop(shop: string): Promise<MerchantDocument | null> {
         return await this.merchantRepository.findMerchantByShop(shop);

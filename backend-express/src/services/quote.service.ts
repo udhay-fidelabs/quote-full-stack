@@ -31,7 +31,7 @@ export class QuoteService implements IQuoteService {
         @inject(TYPES.IEmailService) private readonly emailService: IEmailService,
         @inject(TYPES.IDraftOrderService) private readonly draftOrderService: IDraftOrderService,
         @inject(TYPES.IUsageService) private readonly usageService: IUsageService,
-    ) { }
+    ) {}
 
     async createQuote(shop: string, quoteDataInput: Record<string, unknown>): Promise<QuoteDocument> {
         const merchant = await this.merchantService.getMerchantByShop(shop);
@@ -308,7 +308,13 @@ export class QuoteService implements IQuoteService {
         } as QuoteDocument & { productDetails?: unknown };
     }
 
-    async acceptQuote(session: Session, quoteId: string, price: number, quantity: number, message: string): Promise<void> {
+    async acceptQuote(
+        session: Session,
+        quoteId: string,
+        price: number,
+        quantity: number,
+        message: string,
+    ): Promise<void> {
         const quote = await this.quoteRepository.findById(quoteId);
         if (!quote) {
             throw new Error(ERROR_MESSAGES.QUOTE.NOT_FOUND);
@@ -322,7 +328,6 @@ export class QuoteService implements IQuoteService {
         await quote.save();
 
         await this.emailService.sendQuoteAcceptance(quote, price, quantity, message);
-
     }
 
     async rejectQuote(session: Session, quoteId: string, message: string): Promise<void> {
