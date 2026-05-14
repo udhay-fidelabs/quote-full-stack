@@ -1,5 +1,5 @@
 import type { QuoteDocument } from "@/types";
-import type { IEmailConfigData } from "./IEmailConfigService";
+import type { IEmailConfigData } from "./IEmailConfigData";
 
 export interface IEmailService {
     sendQuoteNotification(shop: string, quote: QuoteDocument): Promise<void>;
