@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, BlockStack, Text, Checkbox, TextField } from '@shopify/polaris';
+import { BlockStack, Card, Checkbox, Text, TextField } from '@shopify/polaris';
+import type React from 'react';
 import type { IEmailSettings } from '../../api/email-settings';
 import { SMTPSettings } from './SMTPSettings';
 
@@ -13,7 +13,9 @@ export const NotificationSettings: React.FC<Props> = ({ settings, onChange }) =>
     <BlockStack gap="400">
       <Card>
         <BlockStack gap="400">
-          <Text as="h2" variant="headingMd">Internal Alerts</Text>
+          <Text as="h2" variant="headingMd">
+            Internal Alerts
+          </Text>
           <Checkbox
             label="Admin email notifications"
             checked={settings.adminEmailEnabled}
@@ -35,7 +37,9 @@ export const NotificationSettings: React.FC<Props> = ({ settings, onChange }) =>
 
       <Card>
         <BlockStack gap="400">
-          <Text as="h2" variant="headingMd">Customer Experience</Text>
+          <Text as="h2" variant="headingMd">
+            Customer Experience
+          </Text>
           <Checkbox
             label="Send confirmation email to customer"
             checked={settings.customerEmailEnabled}
